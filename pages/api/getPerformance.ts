@@ -49,7 +49,7 @@ accounts/${poolOwner}/resource/0x1::staking_contract::Store`,
       { method: "GET" }
     )
   ).json();
-  state = !!directStakingPoolRes?.data?.active;
+  state = !!directStakingPoolRes?.data?.active ? "Active" : "Not Active";
   operator_address = !!directStakingPoolRes?.data?.operator_address;
   voter_address = !!directStakingPoolRes?.data?.voter_address;
   total_stake = directStakingPoolRes?.data?.active.value;
