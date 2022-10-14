@@ -1,0 +1,165 @@
+[
+  {
+    "type": "0x1::stake::StakePool",
+    "data": {
+      "active": { "value": "1975568201729755" },
+      "add_stake_events": {
+        "counter": "1",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "4"
+          }
+        }
+      },
+      "delegated_voter": "0x8ac6fe79b3656feda6485fcf872e00033dd35cd9d8e10b485e3dee34949b2f47",
+      "distribute_rewards_events": {
+        "counter": "18",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "10"
+          }
+        }
+      },
+      "inactive": { "value": "0" },
+      "increase_lockup_events": {
+        "counter": "0",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "8"
+          }
+        }
+      },
+      "initialize_validator_events": {
+        "counter": "0",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "2"
+          }
+        }
+      },
+      "join_validator_set_events": {
+        "counter": "1",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "9"
+          }
+        }
+      },
+      "leave_validator_set_events": {
+        "counter": "0",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "13"
+          }
+        }
+      },
+      "locked_until_secs": "1668230561",
+      "operator_address": "0xb28cb7ccfa1d6d9854d85d69f4ffda2f81dca007ff96509805b4f69b011e9453",
+      "pending_active": { "value": "0" },
+      "pending_inactive": { "value": "0" },
+      "reactivate_stake_events": {
+        "counter": "0",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "5"
+          }
+        }
+      },
+      "rotate_consensus_key_events": {
+        "counter": "1",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "6"
+          }
+        }
+      },
+      "set_operator_events": {
+        "counter": "1",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "3"
+          }
+        }
+      },
+      "unlock_stake_events": {
+        "counter": "0",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "11"
+          }
+        }
+      },
+      "update_network_and_fullnode_addresses_events": {
+        "counter": "1",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "7"
+          }
+        }
+      },
+      "withdraw_stake_events": {
+        "counter": "0",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "12"
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "0x1::stake::ValidatorConfig",
+    "data": {
+      "consensus_pubkey": "0x8301cedf6fe6b91141e8d6dfe6291501c5cc2d849424a512e136472eb1ef3683054a47f206f36a65d0bfbccd2fe93214",
+      "fullnode_addresses": "0x017704024d61636530323038323565393330346635313963333739373737346632623634342d623962383264376234633838616334642e656c622e65752d776573742d312e616d617a6f6e6177732e636f6d0526180720998fc9251996ab489b9a2ad89353a7b7ab3df5eddc39e090e10719185076c6740800",
+      "network_addresses": "0x017704024d61646436646663336363643132343230616239363165636361656265623762612d343630643564393139323631663734382e656c622e65752d776573742d312e616d617a6f6e6177732e636f6d05241807201ab75bf68e5123d816d70ba04ce4b1e7a7dc88fbcfd52afdc457ed3970e2917d0800",
+      "validator_index": "79"
+    }
+  },
+  {
+    "type": "0x1::account::Account",
+    "data": {
+      "authentication_key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "coin_register_events": {
+        "counter": "0",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "0"
+          }
+        }
+      },
+      "guid_creation_num": "14",
+      "key_rotation_events": {
+        "counter": "0",
+        "guid": {
+          "id": {
+            "addr": "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda",
+            "creation_num": "1"
+          }
+        }
+      },
+      "rotation_capability_offer": { "for": { "vec": [] } },
+      "sequence_number": "0",
+      "signer_capability_offer": {
+        "for": {
+          "vec": [
+            "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda"
+          ]
+        }
+      }
+    }
+  }
+]

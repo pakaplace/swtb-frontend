@@ -1,34 +1,23 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## API Spec
 
-## Getting Started
+https://fullnode.mainnet.aptoslabs.com/v1/spec#/
 
-First, run the development server:
+https://aptos-labs.github.io/ts-sdk-doc/
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+https://mainnet.aptoslabs.com/v1/accounts/0xccc221485ee530f3981f4beca12f010d2e7bb38d3fe30bfcf7798d99f4aabb33/resources
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Order:
+get_stake_pools
+get_stake_pool_info
+get_staking_contract_pools
+get_staking_contract_pools
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+0x1 = CORE_CODE_ADDRESS
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+aptos node get-performance \ --pool-address 9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda \ --url https://fullnode.mainnet.aptoslabs.com/v1
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+./aptos node get-performance \
+--pool-address 9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda \
+--url https://fullnode.mainnet.aptoslabs.com/v1
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+./aptos node get-stake-pool --owner-address 0xccc221485ee530f3981f4beca12f010d2e7bb38d3fe30bfcf7798d99f4aabb33 --url https://fullnode.mainnet.aptoslabs.com/v1
