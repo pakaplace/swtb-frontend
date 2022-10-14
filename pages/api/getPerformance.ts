@@ -35,6 +35,13 @@ export default async function handler(
     req.query.poolOwner ||
     "ccc221485ee530f3981f4beca12f010d2e7bb38d3fe30bfcf7798d99f4aabb33";
 
+  const validatorConfigRes = await (
+    await fetch(
+      `${process.env.API_URL}/
+accounts/${poolAddress}/resource/0x1::stake::ValidatorConfig`,
+      { method: "GET" }
+    )
+  ).json();
   const directStakingPoolRes = await (
     await fetch(
       `${process.env.API_URL}/
@@ -67,6 +74,7 @@ accounts/${poolOwner}/resource/0x1::staking_contract::Store`,
         .toDate(),
     },
     managedPools: [],
+    validatorConfig: { ...validatorConfigRes },
   };
   // console.log(managedStakingPoolsRes.data.staking_contracts);
   const managedStakingPools =
@@ -86,15 +94,15 @@ accounts/${poolOwner}/resource/0x1::staking_contract::Store`,
       .dividedBy(principal)
       .multipliedBy(BigNumber(daysSinceStart))
       .dividedBy(BigNumber(365.25));
-    console.log(managedStakingPools[i].value, apr.toString());
     resData.managedPools.push({
       pool_address: managedStakingPools[i].value.pool_address,
       commission_percentage,
       commission_not_yet_unlocked: unlockedCommissionBN.toString(),
       total_rewards: totalRewardsBN.toString(),
-      apr,
+      apr: apr.toNumber(),
+      principal,
     });
   }
-  console.log("ResData", resData);
+  // console.log("ResData", resData);
   res.status(200).json(resData);
 }

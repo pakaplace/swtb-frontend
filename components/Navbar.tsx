@@ -33,9 +33,9 @@ export const Navbar = () => {
               <ButtonGroup variant="ghost-on-accent" spacing="1">
                 <Button>Home</Button>
                 <Button aria-current="page">Dashboard</Button>
-                <Button>Tasks</Button>
+                {/* <Button>Tasks</Button>
                 <Button>Bookmarks</Button>
-                <Button>Users</Button>
+                <Button>Users</Button> */}
               </ButtonGroup>
             )}
           </HStack>
@@ -55,11 +55,11 @@ export const Navbar = () => {
                   aria-label="Help Center"
                 />
               </ButtonGroup>
-              <Avatar
+              {/* <Avatar
                 boxSize="10"
                 name="Christoph Winston"
                 src="https://tinyurl.com/yhkm2ek8"
-              />
+              /> */}
             </HStack>
           ) : (
             <>
