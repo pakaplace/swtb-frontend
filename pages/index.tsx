@@ -13,8 +13,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: { data }, // will be passed to the page component as props
   };
 };
-
-const Home: NextPage = ({ data }: { data: any }) => {
+type HomeProps = {
+  data: any;
+};
+const Home = ({ data }: HomeProps) => {
   return (
     <>
       <Head>

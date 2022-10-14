@@ -16,7 +16,10 @@ import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
 
 const formatAptos = (val: string) => BigNumber(val).shiftedBy(-8).toFormat(2);
-export const Content = ({ data }: { data: any }) => (
+interface ContentProps {
+  data: any;
+}
+export const Content = ({ data }: ContentProps) => (
   <Stack spacing={{ base: "8", lg: "6" }}>
     <Stack
       spacing="4"

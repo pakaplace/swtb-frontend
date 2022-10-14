@@ -2,13 +2,22 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
-type Data = {
-  name: string;
+
+type ResData = {
+  directPool: {
+    state: boolean;
+    operator_address: string;
+    voter_address: string;
+    total_stake: string;
+    lockup_expiration_utc_time: Date;
+  };
+  managedPools: any[];
+  validatorConfig: any;
 };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<ResData>
 ) {
   // variables from rust api
   let state;
@@ -63,11 +72,11 @@ accounts/${poolOwner}/resource/0x1::staking_contract::Store`,
   lockup_expiration_utc_time = dayjs.unix(
     directStakingPoolRes?.data?.locked_until_secs
   );
-  const resData = {
+  let resData: ResData = {
     directPool: {
       state: !!directStakingPoolRes?.data?.active,
-      operator_address: !!directStakingPoolRes?.data?.operator_address,
-      voter_address: !!directStakingPoolRes?.data?.voter_address,
+      operator_address: directStakingPoolRes?.data?.operator_address,
+      voter_address: directStakingPoolRes?.data?.voter_address,
       total_stake: directStakingPoolRes?.data?.active.value,
       lockup_expiration_utc_time: dayjs
         .unix(directStakingPoolRes?.data?.locked_until_secs)
