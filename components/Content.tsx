@@ -2,6 +2,7 @@ import {
   Box,
   BoxProps,
   Button,
+  Divider,
   Heading,
   SimpleGrid,
   Stack,
@@ -14,8 +15,9 @@ import { FiDownloadCloud } from "react-icons/fi";
 import { Stat } from "./Stat";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
+import numeral from "numeral";
 
-const formatAptos = (val: string) => BigNumber(val).shiftedBy(-8).toFormat(2);
+const formatAptos = (val: string) => BigNumber(val).shiftedBy(-8).toFormat(0);
 interface ContentProps {
   data: any;
 }
@@ -28,7 +30,7 @@ export const Content = ({ data }: ContentProps) => (
     >
       <Stack spacing="1">
         <Heading
-          size={useBreakpointValue({ base: "xs", lg: "sm" })}
+          size={useBreakpointValue({ base: "sm", lg: "md" })}
           fontWeight="medium"
         >
           Dashboard
@@ -46,37 +48,64 @@ export const Content = ({ data }: ContentProps) => (
       </Stack>
     </Stack>
     <Stack spacing={{ base: "5", lg: "6" }}>
+      <Heading
+        size={useBreakpointValue({ base: "xs", lg: "sm" })}
+        fontWeight="medium"
+      >
+        Overall Performance
+      </Heading>{" "}
       <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
         <Stat
           label={"Principal"}
-          value={formatAptos(data.managedPools[0].principal)}
+          value={numeral(formatAptos(data.managedPools[0].principal)).format(
+            "0.000a"
+          )}
         />
         <Stat
           label={"Total Rewards"}
           value={formatAptos(data.managedPools[0].total_rewards)}
+        />
+
+        <Stat
+          label={"Daily Rewards"}
+          value={formatAptos(data.managedPools[0].rewardsPerDay)}
+        />
+        <Stat
+          label={"APR"}
+          value={Number(data.managedPools[0].apr).toFixed(2) + "%"}
+        />
+      </SimpleGrid>
+      <Divider />
+      <Heading
+        size={useBreakpointValue({ base: "xs", lg: "sm" })}
+        fontWeight="medium"
+      >
+        Commissions
+      </Heading>{" "}
+      <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
+        <Stat
+          label={"Commission Percentage"}
+          value={
+            Number(data.managedPools[0].commission_percentage).toFixed(2) + "%"
+          }
+        />
+        <Stat
+          label={"Daily Commission"}
+          value={formatAptos(data.managedPools[0].commissionPerDay)}
         />
         <Stat
           label={"Commission"}
           value={formatAptos(data.managedPools[0].commission_not_yet_unlocked)}
         />
         <Stat
-          label={"APR"}
-          value={Number(data.managedPools[0].apr).toFixed(2) + "%"}
-        />
-        <Stat
           label={"Next Unlock At"}
           value={dayjs(data.directPool.lockup_expiration_utc_time).format(
-            "YYYY-MM-DD hh:mm A"
+            "MM/DD/YY hh:mm A"
           )}
         />
       </SimpleGrid>
-      <SimpleGrid columns={{ base: 1, md: 3 }} gap="6">
-        <Card />
-        <Card />
-        <Card />
-      </SimpleGrid>
     </Stack>
-    <Card minH="xs" />
+    {/* <Card minH="xs" /> */}
   </Stack>
 );
 

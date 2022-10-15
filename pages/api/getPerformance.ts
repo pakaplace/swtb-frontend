@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
+import { AspectRatio } from "@chakra-ui/react";
 
 type ResData = {
   directPool: {
@@ -98,17 +99,25 @@ accounts/${poolOwner}/resource/0x1::staking_contract::Store`,
     const unlockedCommissionBN = totalRewardsBN.multipliedBy(
       BigNumber(commission_percentage).dividedBy(BigNumber(100))
     );
-    const daysSinceStart = dayjs().diff(dayjs("2022-10-12"));
-    const apr = totalRewardsBN
+
+    const daysSinceStart = dayjs().diff(dayjs("2022-10-12"), "day");
+    const commissionPerDayBN = unlockedCommissionBN.dividedBy(
+      BigNumber(daysSinceStart)
+    );
+    const rewardsPerDayBN = totalRewardsBN.dividedBy(BigNumber(daysSinceStart));
+    const apr = rewardsPerDayBN
+      .multipliedBy(BigNumber(365.25))
       .dividedBy(principal)
-      .multipliedBy(BigNumber(daysSinceStart))
-      .dividedBy(BigNumber(365.25));
+      .multipliedBy(BigNumber(100));
+
     resData.managedPools.push({
       pool_address: managedStakingPools[i].value.pool_address,
       commission_percentage,
       commission_not_yet_unlocked: unlockedCommissionBN.toString(),
       total_rewards: totalRewardsBN.toString(),
       apr: apr.toNumber(),
+      rewardsPerDay: rewardsPerDayBN.toString(),
+      commissionPerDay: commissionPerDayBN.toString(),
       principal,
     });
   }

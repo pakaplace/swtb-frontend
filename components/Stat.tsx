@@ -56,7 +56,7 @@ export const Stat = (props: Props) => {
           </HStack>
         </Stack>
       </Box>
-      <Divider />
+      {/* <Divider /> */}
       {/* <Box px={{ base: "4", md: "6" }} py="4">
         <Button variant="link" colorScheme="blue" size="sm">
           Learn more
