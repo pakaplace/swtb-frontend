@@ -2,8 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
+import { getAccountEvents, getAccountResource } from "../../lib/services";
 const CORE_CODE_ADDRESS = "0x1";
-type ResData = {
+
+type ResponseData = {
   epoch: number;
   epoch_interval_secs: number;
   current_epoch_start_time: number;
@@ -12,7 +14,7 @@ type ResData = {
   current_epoch_failed_proposals: number;
   previous_epoch_rewards: string[];
   validator_index: number;
-  directPool: {
+  pool: {
     state: boolean;
     operator_address: string;
     voter_address: string;
@@ -23,34 +25,16 @@ type ResData = {
   validatorConfig: any;
 };
 
-const getAccountResource = async (address: string, resourceType: string) => {
-  const res = await fetch(
-    `${process.env.API_URL}/accounts/${address}/resource/${resourceType}`
-  );
-  return await res.json();
-};
-const getAccountEvents = async (
-  address: string,
-  structTag: string,
-  fieldName: string,
-  start?: number,
-  limit?: number
-) => {
-  const res = await fetch(
-    `${
-      process.env.API_URL
-    }/accounts/${address}/events/${structTag}/${fieldName}?${
-      typeof start !== "undefined" ? "&start=" + start : ""
-    }${typeof limit !== "undefined" ? "&limit=" + limit : ""}`
-  );
-  return await res.json();
-};
-
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResData>
+  res: NextApiResponse<ResponseData>
 ) {
-  // variables from rust api
+  let pool = req.query.pool as string;
+  if (pool.indexOf("0x") < 0) pool = "0x" + pool;
+  let owner = req.query.owner as string;
+  if (owner.indexOf("0x") < 0) owner = "0x" + owner;
+
+  // variables from aptos cli / move contracts
   let state;
   let operator_address;
   let voter_address;
@@ -69,10 +53,10 @@ export default async function handler(
   let current_epoch_failed_proposals;
   // variables added by parker
 
-  const poolAddress: string =
-    "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda";
-  const poolOwner =
-    "0xccc221485ee530f3981f4beca12f010d2e7bb38d3fe30bfcf7798d99f4aabb33";
+  // const pool: string =
+  //   "0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda";
+  // const owner =
+  //   "0xccc221485ee530f3981f4beca12f010d2e7bb38d3fe30bfcf7798d99f4aabb33";
   const block_resource = await getAccountResource(
     CORE_CODE_ADDRESS,
     "0x1::block::BlockResource"
@@ -98,7 +82,7 @@ export default async function handler(
   );
 
   const validator = validatorSet.data.active_validators.find(
-    (validator: any) => validator.addr === poolAddress
+    (validator: any) => validator.addr === pool
   );
   if (!validator) return console.error("validator not found");
   const validator_index = Number(validator.config.validator_index);
@@ -111,36 +95,32 @@ export default async function handler(
     currentEpochPerformance["failed_proposals"]
   );
   let events = await getAccountEvents(
-    poolAddress,
+    pool,
     "0x1::stake::StakePool",
     "distribute_rewards_events",
     10,
     1000
   );
-  let total: BigNumber;
   let previous_epoch_rewards = events.map((event: any) => {
     return event.data.rewards_amount;
   });
   const validatorConfigRes = await getAccountResource(
-    poolAddress,
+    pool,
     "0x1::stake::ValidatorConfig"
   );
-  const directStakingPoolRes = await getAccountResource(
-    poolAddress,
-    `0x1::stake::StakePool`
-  );
+  const validatorRes = await getAccountResource(pool, `0x1::stake::StakePool`);
   const managedStakingPoolsRes = await getAccountResource(
-    poolOwner,
+    owner,
     `0x1::staking_contract::Store`
   );
-  state = !!directStakingPoolRes?.data?.active ? "Active" : "Not Active";
-  operator_address = !!directStakingPoolRes?.data?.operator_address;
-  voter_address = !!directStakingPoolRes?.data?.voter_address;
-  total_stake = directStakingPoolRes?.data?.active.value;
+  state = !!validatorRes?.data?.active ? "Active" : "Not Active";
+  operator_address = !!validatorRes?.data?.operator_address;
+  voter_address = !!validatorRes?.data?.voter_address;
+  total_stake = validatorRes?.data?.active.value;
   lockup_expiration_utc_time = dayjs.unix(
-    directStakingPoolRes?.data?.locked_until_secs
+    validatorRes?.data?.locked_until_secs
   );
-  let resData: ResData = {
+  let resData: ResponseData = {
     epoch,
     epoch_interval_secs,
     current_epoch_start_time,
@@ -149,13 +129,13 @@ export default async function handler(
     current_epoch_failed_proposals,
     previous_epoch_rewards,
     validator_index,
-    directPool: {
-      state: !!directStakingPoolRes?.data?.active,
-      operator_address: directStakingPoolRes?.data?.operator_address,
-      voter_address: directStakingPoolRes?.data?.voter_address,
-      total_stake: directStakingPoolRes?.data?.active.value,
+    pool: {
+      state: !!validatorRes?.data?.active,
+      operator_address: validatorRes?.data?.operator_address,
+      voter_address: validatorRes?.data?.voter_address,
+      total_stake: validatorRes?.data?.active.value,
       lockup_expiration_utc_time: dayjs
-        .unix(directStakingPoolRes?.data?.locked_until_secs)
+        .unix(validatorRes?.data?.locked_until_secs)
         .toDate(),
     },
     managedPools: [],

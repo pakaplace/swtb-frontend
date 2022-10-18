@@ -8,11 +8,16 @@ import { Navbar } from "../components/Navbar";
 import { theme as proTheme } from "@chakra-ui/pro-theme";
 import "@fontsource/inter/variable.css";
 
-const theme = extendTheme({}, proTheme);
+export const theme = extendTheme(
+  {
+    colors: { ...proTheme.colors, brand: proTheme.colors.purple },
+  },
+  proTheme
+);
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider theme={theme}>
+    <ChakraProvider theme={proTheme}>
       <Box as="section" height="100vh" overflowY="auto">
         <Navbar />
         <Container pt={{ base: "8", lg: "12" }} pb={{ base: "12", lg: "24" }}>

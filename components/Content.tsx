@@ -115,7 +115,7 @@ export const Content = ({ data }: ContentProps) => (
         />
         <Stat
           label={"Next Unlock At"}
-          value={dayjs(data.directPool.lockup_expiration_utc_time).format(
+          value={dayjs(data.pool.lockup_expiration_utc_time).format(
             "MM/DD/YY hh:mm A"
           )}
         />

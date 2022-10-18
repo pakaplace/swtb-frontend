@@ -18,10 +18,12 @@ import { FiHelpCircle, FiSearch, FiSettings } from "react-icons/fi";
 import { Logo } from "./Logo";
 import { Sidebar } from "../components/Sidebar";
 import { ToggleButton } from "./ToggleButton";
+import { useRouter } from "next/router";
 
 export const Navbar = () => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const { isOpen, onToggle, onClose } = useDisclosure();
+  const router = useRouter();
 
   return (
     <Box as="nav" bg="bg-accent" color="on-accent">
@@ -29,17 +31,15 @@ export const Navbar = () => {
         <Flex justify="space-between">
           <HStack spacing="4">
             <Logo />
-            {isDesktop && (
-              <ButtonGroup variant="ghost-on-accent" spacing="1">
-                <Button>Home</Button>
-                <Button aria-current="page">Dashboard</Button>
-                {/* <Button>Tasks</Button>
+            <ButtonGroup variant="ghost-on-accent" spacing="1">
+              <Button onClick={() => router.push("/")}>Home</Button>
+              {/* <Button aria-current="page">Dashboard</Button> */}
+              {/* <Button>Tasks</Button>
                 <Button>Bookmarks</Button>
                 <Button>Users</Button> */}
-              </ButtonGroup>
-            )}
+            </ButtonGroup>
           </HStack>
-          {isDesktop ? (
+          {/* {isDesktop ? (
             <HStack spacing="4">
               <ButtonGroup variant="ghost-on-accent" spacing="1">
                 <IconButton
@@ -55,11 +55,6 @@ export const Navbar = () => {
                   aria-label="Help Center"
                 />
               </ButtonGroup>
-              {/* <Avatar
-                boxSize="10"
-                name="Christoph Winston"
-                src="https://tinyurl.com/yhkm2ek8"
-              /> */}
             </HStack>
           ) : (
             <>
@@ -83,7 +78,7 @@ export const Navbar = () => {
                 </DrawerContent>
               </Drawer>
             </>
-          )}
+          )} */}
         </Flex>
       </Container>
     </Box>
