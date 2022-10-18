@@ -76,7 +76,7 @@ const Index = ({ data }: HomeProps) => {
             )}
           </FormControl>
           <FormControl isInvalid={!!ownerError}>
-            <FormLabel>Staker Address</FormLabel>
+            <FormLabel>Owner Address</FormLabel>
             <Input
               type="hex"
               value={owner}
@@ -89,7 +89,7 @@ const Index = ({ data }: HomeProps) => {
             />
             {!ownerError ? (
               <FormHelperText>
-                Please enter the address of your Staker
+                Please enter the address of the Stake Pool Owner
               </FormHelperText>
             ) : (
               <FormErrorMessage>
