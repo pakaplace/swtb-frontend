@@ -11,15 +11,24 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import {
+  RequestCommissionEvent,
+  AddStakeEvent,
+  WithdrawStakeEvent,
+} from "../pages/api/getPerformance";
+import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
+  TableCaption,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
 } from "@chakra-ui/react";
 
 import * as React from "react";
@@ -72,24 +81,53 @@ export const Content = ({ data }: ContentProps) => (
       </Heading>{" "}
       <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
         <Stat
-          label={"Principal"}
+          label={"Initial Principal"}
+          value={numeral(formatAptos(data.pool.initialPrincipal)).format(
+            "0.000a"
+          )}
+        />
+        <Stat
+          label={"Curr Principal"}
           value={numeral(formatAptos(data.managedPools[0].principal)).format(
             "0.000a"
           )}
         />
         <Stat
+          label={"Curr Rewards"}
+          value={formatAptos(data.managedPools[0].currRewards)}
+        />
+        <Stat
           label={"Total Rewards"}
           value={formatAptos(data.managedPools[0].total_rewards)}
         />
-
         <Stat
+          label={"Pending Inactive"}
+          value={formatAptos(data.pool.pendingInactive)}
+        />
+        <Stat
+          label={"Pending Active"}
+          value={formatAptos(data.pool.pendingActive)}
+        />
+        <Stat
+          label={"Min Stake"}
+          value={numeral(formatAptos(data.stakingConfig.minimum_stake)).format(
+            "0.00a"
+          )}
+        />
+        <Stat
+          label={"Max Stake"}
+          value={numeral(formatAptos(data.stakingConfig.maximum_stake)).format(
+            "0.00a"
+          )}
+        />
+        {/* <Stat
           label={"Daily Rewards"}
           value={formatAptos(data.managedPools[0].rewardsPerDay)}
-        />
-        <Stat
+        /> */}
+        {/* <Stat
           label={"APR"}
           value={Number(data.managedPools[0].apr).toFixed(2) + "%"}
-        />
+        /> */}
       </SimpleGrid>
       <Divider />
       <Heading
@@ -106,11 +144,15 @@ export const Content = ({ data }: ContentProps) => (
           }
         />
         <Stat
-          label={"Daily Commission"}
+          label={"Daily Avg Commission"}
           value={formatAptos(data.managedPools[0].commissionPerDay)}
         />
         <Stat
-          label={"Commission"}
+          label={"Requested Commission"}
+          value={formatAptos(data.accumulatedCommissions)}
+        />
+        <Stat
+          label={"Locked Commission"}
           value={formatAptos(data.managedPools[0].commission_not_yet_unlocked)}
         />
         <Stat
@@ -149,56 +191,148 @@ export const Content = ({ data }: ContentProps) => (
         />
         <Stat
           label={"Last Epoch Rewards"}
-          value={formatAptos(
-            data.previous_epoch_rewards[data.previous_epoch_rewards.length - 1]
-          )}
+          value={formatAptos(data.previous_epoch_rewards[0])}
         />
         <Stat
           label={"Last Epoch Commission"}
           value={formatAptos(
-            (
-              Number(
-                data.previous_epoch_rewards[
-                  data.previous_epoch_rewards.length - 1
-                ]
-              ) * 0.12
-            ).toString()
+            (Number(data.previous_epoch_rewards[0]) * 0.12).toString()
           )}
         />
       </SimpleGrid>
     </Stack>
+
     <Card minH="xs">
-      <TableContainer>
-        <Table variant="simple">
-          {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
-          <Thead>
-            <Tr>
-              <Th>Timestamp</Th>
-              <Th>Rewards</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {data.previous_epoch_rewards
-              .reverse()
-              .map((reward: string, i: number) => (
-                <Tr>
-                  <Td>
-                    {dayjs
-                      .unix(
-                        data.current_epoch_start_time / 1_000_000 - 7200 * i
-                      )
-                      .format("MM/DD/YY HH:MM A")}
-                  </Td>
-                  <Td>{formatAptos(reward, 4)}</Td>
-                </Tr>
-              ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
+      <Tabs>
+        <TabList>
+          <Tab>Epoch Rewards</Tab>
+          <Tab>Requested Commissions</Tab>
+          <Tab>Add Stake Events</Tab>
+          <Tab>Withdraw Stake Events</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <RewardsTable data={data} />
+          </TabPanel>
+          <TabPanel>
+            <RequestCommissionsTable data={data} />
+          </TabPanel>
+          <TabPanel>
+            <AddStakeTable data={data} />
+          </TabPanel>
+          <TabPanel>
+            <WithdrawalsTable data={data} />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Card>
   </Stack>
 );
 
+const RewardsTable = ({ data }: { data: any }) => (
+  <TableContainer>
+    <Table variant="simple">
+      {/* <TableCaption>Epoch Rewards</TableCaption> */}
+      <Thead>
+        <Tr>
+          <Th>Timestamp</Th>
+          <Th>Rewards</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {data.previous_epoch_rewards.map((reward: string, i: number) => (
+          <Tr>
+            <Td>
+              {dayjs
+                .unix(data.current_epoch_start_time / 1_000_000 - 7200 * i)
+                .format("MM/DD/YY HH:MM A")}
+            </Td>
+            <Td>{formatAptos(reward, 4)}</Td>
+          </Tr>
+        ))}
+      </Tbody>
+    </Table>
+  </TableContainer>
+);
+
+const RequestCommissionsTable = ({ data }: { data: any }) => (
+  <TableContainer>
+    <Table variant="simple">
+      {/* <TableCaption>Epoch Rewards</TableCaption> */}
+      <Thead>
+        <Tr>
+          <Th>Rewards Amount</Th>
+          <Th>Commission Amount</Th>
+          <Th>Operator</Th>
+          <Th>Pool</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {data.requestCommissionEvents.map(
+          ({
+            accumulated_rewards,
+            commission_amount,
+            operator,
+            pool_address,
+          }: RequestCommissionEvent) => (
+            <Tr>
+              <Td>{formatAptos(accumulated_rewards, 2)}</Td>
+              <Td>{formatAptos(commission_amount, 2)}</Td>
+              <Td>{operator.slice(0, 8)}...</Td>
+              <Td>{pool_address.slice(0, 8)}...</Td>
+            </Tr>
+          )
+        )}
+      </Tbody>
+    </Table>
+  </TableContainer>
+);
+const AddStakeTable = ({ data }: { data: any }) => (
+  <TableContainer>
+    <Table variant="simple">
+      {/* <TableCaption>Epoch Rewards</TableCaption> */}
+      <Thead>
+        <Tr>
+          <Th>Amount Staked</Th>
+          <Th>Pool Address</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {data.addStakeEvents.map(
+          ({ amount_added, pool_address }: AddStakeEvent) => (
+            <Tr>
+              <Td>{formatAptos(amount_added, 2)}</Td>
+              <Td>{pool_address.slice(0, 8)}...</Td>
+            </Tr>
+          )
+        )}
+      </Tbody>
+    </Table>
+  </TableContainer>
+);
+const WithdrawalsTable = ({ data }: { data: any }) => (
+  <TableContainer>
+    <Table variant="simple">
+      {/* <TableCaption>Epoch Rewards</TableCaption> */}
+      <Thead>
+        <Tr>
+          <Th>Amount Withdrawn</Th>
+          <Th>Pool Address</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {data.withdrawStakeEvents.map(
+          ({ amount_withdrawn, pool_address }: WithdrawStakeEvent) => (
+            <Tr>
+              <Td>{formatAptos(amount_withdrawn, 2)}</Td>
+              <Td>{pool_address.slice(0, 8)}...</Td>{" "}
+            </Tr>
+          )
+        )}
+      </Tbody>
+    </Table>
+  </TableContainer>
+);
 const Card = (props: BoxProps) => (
   <Box
     minH="36"
