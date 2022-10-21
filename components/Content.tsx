@@ -93,19 +93,19 @@ export const Content = ({ data }: ContentProps) => (
           )}
         />
         <Stat
-          label={"Curr Rewards"}
+          label={"Unrequested Rewards"}
           value={formatAptos(data.managedPools[0].currRewards)}
         />
         <Stat
-          label={"Total Rewards"}
+          label={"Cummulative Rewards"}
           value={formatAptos(data.managedPools[0].total_rewards)}
         />
         <Stat
-          label={"Pending Inactive"}
+          label={"Pending Inactive APT"}
           value={formatAptos(data.pool.pendingInactive)}
         />
         <Stat
-          label={"Pending Active"}
+          label={"Pending Active APT"}
           value={formatAptos(data.pool.pendingActive)}
         />
         <Stat
@@ -166,7 +166,7 @@ export const Content = ({ data }: ContentProps) => (
         size={useBreakpointValue({ base: "xs", lg: "sm" })}
         fontWeight="medium"
       >
-        Current Epoch
+        Current Epoch Performance
       </Heading>{" "}
       <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
         <Stat label={"Epoch"} value={data.epoch} />
@@ -183,7 +183,7 @@ export const Content = ({ data }: ContentProps) => (
             .format("MM/DD hh:mm A")}
         />
         <Stat
-          label={"Current Epoch Performance"}
+          label={"Successful Proposals"}
           value={`${data.current_epoch_successful_proposals} / ${
             data.current_epoch_successful_proposals +
             data.current_epoch_failed_proposals
@@ -201,7 +201,12 @@ export const Content = ({ data }: ContentProps) => (
         />
       </SimpleGrid>
     </Stack>
-
+    <Heading
+      size={useBreakpointValue({ base: "xs", lg: "sm" })}
+      fontWeight="medium"
+    >
+      Stake Pool Management
+    </Heading>
     <Card minH="xs">
       <Tabs>
         <TabList>
