@@ -81,24 +81,24 @@ export const Content = ({ data }: ContentProps) => (
       </Heading>{" "}
       <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
         <Stat
-          label={"Initial Principal"}
-          value={numeral(formatAptos(data.pool.initialPrincipal)).format(
-            "0.000a"
-          )}
-        />
-        <Stat
           label={"Curr Principal"}
           value={numeral(formatAptos(data.managedPools[0].principal)).format(
             "0.000a"
           )}
         />
         <Stat
-          label={"Unrequested Rewards"}
-          value={formatAptos(data.managedPools[0].currRewards)}
+          label={"Initial Principal"}
+          value={numeral(formatAptos(data.pool.initialPrincipal)).format(
+            "0.000a"
+          )}
         />
         <Stat
           label={"Cummulative Rewards"}
           value={formatAptos(data.managedPools[0].total_rewards)}
+        />
+        <Stat
+          label={"Unrequested Rewards"}
+          value={formatAptos(data.managedPools[0].currRewards)}
         />
         <Stat
           label={"Pending Inactive APT"}
@@ -152,7 +152,7 @@ export const Content = ({ data }: ContentProps) => (
           value={formatAptos(data.accumulatedCommissions)}
         />
         <Stat
-          label={"Locked Commission"}
+          label={"Unrequested Commission"}
           value={formatAptos(data.managedPools[0].commission_not_yet_unlocked)}
         />
         <Stat
@@ -212,8 +212,8 @@ export const Content = ({ data }: ContentProps) => (
         <TabList>
           <Tab>Epoch Rewards</Tab>
           <Tab>Requested Commissions</Tab>
-          <Tab>Add Stake Events</Tab>
-          <Tab>Withdraw Stake Events</Tab>
+          <Tab>Add Stake</Tab>
+          <Tab>Withdraw Stake</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>

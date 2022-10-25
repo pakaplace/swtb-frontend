@@ -33,3 +33,9 @@ https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-fr
 
 Staking_contract.move - stakers create pools and set operators
 https://github.com/aptos-labs/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/staking_contract.move
+
+
+aptos stake request-commission \
+  --operator-address 0x3bec5a529b023449dfc86e9a6b5b51bf75cec4a62bf21c15bbbef08a75f7038f \
+  --owner-address 0xe7be097a90c18f6bdd53efe0e74bf34393cac2f0ae941523ea196a47b6859edb \
+  --profile mainnet-operator
