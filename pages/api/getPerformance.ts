@@ -147,8 +147,8 @@ export default async function handler(
       pool,
       Resource.StakePool,
       StakePoolEvents.distribute_rewards,
-      0, // start, desc
-      100 // limit
+      undefined,
+      100
     ),
     getAccountResource(pool, Resource.ValidatorConfig),
     getAccountResource("0x1", Resource.StakingConfig),
@@ -175,8 +175,13 @@ export default async function handler(
     .map((event: any) => {
       return event.data.rewards_amount;
     })
-    .reverse(); // sort by earliest
-  console.log("Withdraw stake", withdraw_stake_events);
+    .reverse();
+  // .slice(0, 100);
+  // .reverse(); // sort by earliest
+
+  // console.log("dist rewards", distribute_rewards_events);
+  // console.log("epoch rewards", previous_epoch_rewards);
+  // console.log("Withdraw stake", withdraw_stake_events);
   let withdrawStakeEvents = withdraw_stake_events
     .map((event: any) => event.data)
     .reverse();
