@@ -153,7 +153,9 @@ export const Content = ({ data }: ContentProps) => (
         />
         <Stat
           label={"Unrequested Commission"}
-          value={formatAptos(data.managedPools[0].commission_not_yet_unlocked)}
+          value={
+            formatAptos(Number(data.managedPools[0].commission_not_yet_unlocked) - Number(data.accumulatedCommissions))
+          }
         />
         <Stat
           label={"Next Unlock At"}
