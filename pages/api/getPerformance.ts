@@ -260,11 +260,14 @@ export default async function handler(
       .multipliedBy(BigNumber(365.25))
       .dividedBy(principal)
       .multipliedBy(BigNumber(100));
-
+    const unrequestedCommissions: string = unlockedCommissionBN
+      .minus(BigNumber(accumulatedCommissions))
+      .toString();
     resData.managedPools.push({
       pool_address: managedStakingPools[i].value.pool_address,
       commission_percentage,
       commission_not_yet_unlocked: unlockedCommissionBN.toString(),
+      unrequestedCommissions,
       total_rewards: totalRewardsBN.toString(),
       currRewards: currRewardsBN.toString(),
       apr: apr.toNumber(),
