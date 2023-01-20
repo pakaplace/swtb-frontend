@@ -20,14 +20,14 @@ import { Sidebar } from "../components/Sidebar";
 import { ToggleButton } from "./ToggleButton";
 import { useRouter } from "next/router";
 import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { useWallet, WalletReadyState } from "@aptos-labs/wallet-adapter-react";
 
 export const Navbar = () => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const { isOpen, onToggle, onClose } = useDisclosure();
   const router = useRouter();
 
-  const { connected, disconnect } = useWallet();
+  const { connect, connected, disconnect, wallets } = useWallet();
 
   return (
     <Box as="nav" bg="bg-accent" color="on-accent">
@@ -37,7 +37,27 @@ export const Navbar = () => {
             <Logo />
             <ButtonGroup variant="ghost-on-accent" spacing="1">
               <Button onClick={() => router.push("/")}>Home</Button>
-              {!connected && <WalletSelector />}
+              {/* {!connected && <WalletSelector />} */}
+              {!connected && (
+                <>
+                  {wallets.map((wallet) => (
+                    <Button
+                      className={`bg-blue-500  text-white font-bold py-2 px-4 rounded mr-4 ${
+                        wallet.readyState !== "Installed"
+                          ? "opacity-50 cursor-not-allowed"
+                          : "hover:bg-blue-700"
+                      }`}
+                      disabled={
+                        wallet.readyState !== WalletReadyState.Installed
+                      }
+                      key={wallet.name}
+                      onClick={() => connect(wallet.name)}
+                    >
+                      <>{wallet.name}</>
+                    </Button>
+                  ))}
+                </>
+              )}
               {connected && <Button onClick={disconnect}>Disconnect</Button>}
               {/* <Button aria-current="page">Dashboard</Button> */}
               {/* <Button>Tasks</Button>
