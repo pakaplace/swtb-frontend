@@ -72,7 +72,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
       type: "entry_function_payload",
       function: "0x1::coin::transfer",
       type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [PARKER, 1], // 1 is in Octas
+      arguments: [PARKER, 2], // 1 is in Octas
     };
 
     try {
