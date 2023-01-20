@@ -11,6 +11,7 @@ get_stake_pools
 get_stake_pool_info
 get_staking_contract_pools
 get_staking_contract_pools
+request_commission
 
 0x1 = CORE_CODE_ADDRESS
 
