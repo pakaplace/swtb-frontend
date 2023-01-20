@@ -87,7 +87,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
     const payload = {
       type: "entry_function_payload",
       function: "0x1::staking_contract::request_commission",
-      type_arguments: ["0x1::staking_contract::RequestCommission"], // type
+      type_arguments: [], // type
       arguments: [owner, pool], // account is first arg as &signer
     };
 
