@@ -66,7 +66,6 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
   } = useWallet();
 
   const onSignAndSubmitTransaction = async () => {
-    console.log(pool, owner);
     const payload = {
       type: "entry_function_payload",
       function: "0x1::staking_contract::request_commission",

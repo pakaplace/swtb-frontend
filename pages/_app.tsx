@@ -9,6 +9,7 @@ import { theme as proTheme } from "@chakra-ui/pro-theme";
 import "@fontsource/inter/variable.css";
 import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
 import { MartianWallet } from "@martianwallet/aptos-wallet-adapter";
+import { PetraWallet } from "petra-plugin-wallet-adapter";
 import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
 
 export const theme = extendTheme(
@@ -18,7 +19,7 @@ export const theme = extendTheme(
   proTheme
 );
 
-const wallets = [new MartianWallet()];
+const wallets = [new MartianWallet(), new PetraWallet()];
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
