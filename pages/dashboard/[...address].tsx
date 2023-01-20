@@ -3,6 +3,11 @@ import Head from "next/head";
 import { Content } from "../../components/Content";
 import { GetServerSideProps } from "next";
 import { ParsedUrlQuery } from "querystring";
+import dynamic from "next/dynamic";
+
+const Web3Provider = dynamic(() => import("@fewcha/web3-react"), {
+  ssr: false,
+});
 
 interface IParams extends ParsedUrlQuery {
   address: string[];
@@ -61,7 +66,9 @@ const Home = ({ data }: HomeProps) => {
         <meta name="description" content="SWTB Staking Dashboard" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Content data={data} />
+      <Web3Provider>
+        <Content data={data} />
+      </Web3Provider>
     </>
   );
 };
