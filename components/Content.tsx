@@ -3,12 +3,16 @@ import {
   BoxProps,
   Button,
   Divider,
+  FormControl,
+  FormErrorMessage,
   Heading,
+  HStack,
   SimpleGrid,
   Stack,
   Text,
   useBreakpointValue,
   useColorModeValue,
+  VStack,
 } from "@chakra-ui/react";
 import {
   RequestCommissionEvent,
@@ -72,7 +76,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
       type: "entry_function_payload",
       function: "0x1::coin::transfer",
       type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [PARKER, 2], // 1 is in Octas
+      arguments: [PARKER, 1], // 1 is in Octas
     };
 
     try {
@@ -84,15 +88,11 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
   };
 
   const onRequestCommission = async () => {
-    console.log("`", pool);
     const payload = {
       type: "entry_function_payload",
       function: "0x1::staking_contract::request_commission",
       type_arguments: [], // type
-      arguments: [
-        owner,
-        "0xb28cb7ccfa1d6d9854d85d69f4ffda2f81dca007ff96509805b4f69b011e9453",
-      ], // account is first arg as &signer
+      arguments: [owner, data.pool?.operator_address], // account is first arg as &signer
     };
 
     try {
@@ -119,18 +119,30 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
           </Heading>
           <Text color="muted">All important metrics at a glance</Text>
           {connected && (
-            <div>
-              <Box mb={2}>
-                <Text>
-                  {wallet?.name} wallet with address {account?.address} is
-                  connected.
-                </Text>
-              </Box>
-              <Button mr={2} onClick={onSendToParker}>
-                Send 1 APT to Parker
-              </Button>
-              <Button onClick={onRequestCommission}>Request commission</Button>
-            </div>
+            <VStack mb={2} alignItems="start">
+              <Text fontSize={"sm"}>
+                <b>{wallet?.name} Wallet:</b> {account?.address}
+              </Text>
+              <Text fontSize={"sm"}>
+                <b>Pool Operator Address</b> {data.pool.operator_address}
+              </Text>
+              <HStack alignItems={"start"}>
+                <Button mr={2} onClick={onSendToParker}>
+                  Send 1 APT to Parker
+                </Button>
+                <VStack alignItems={"start"}>
+                  <Button
+                    isDisabled={data.pool.operator_address !== account?.address}
+                    onClick={onRequestCommission}
+                  >
+                    Request commission
+                  </Button>
+                  <Text color={"red"} fontSize="xs" ml={2}>
+                    Connected address must match the operator address
+                  </Text>
+                </VStack>
+              </HStack>
+            </VStack>
           )}
         </Stack>
         <Stack direction="row" spacing="3">
