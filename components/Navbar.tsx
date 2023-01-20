@@ -19,11 +19,15 @@ import { Logo } from "./Logo";
 import { Sidebar } from "../components/Sidebar";
 import { ToggleButton } from "./ToggleButton";
 import { useRouter } from "next/router";
+import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 export const Navbar = () => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const { isOpen, onToggle, onClose } = useDisclosure();
   const router = useRouter();
+
+  const { connected, disconnect } = useWallet();
 
   return (
     <Box as="nav" bg="bg-accent" color="on-accent">
@@ -33,6 +37,8 @@ export const Navbar = () => {
             <Logo />
             <ButtonGroup variant="ghost-on-accent" spacing="1">
               <Button onClick={() => router.push("/")}>Home</Button>
+              {!connected && <WalletSelector />}
+              {connected && <Button onClick={disconnect}>Disconnect</Button>}
               {/* <Button aria-current="page">Dashboard</Button> */}
               {/* <Button>Tasks</Button>
                 <Button>Bookmarks</Button>

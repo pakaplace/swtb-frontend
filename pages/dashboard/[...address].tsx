@@ -3,11 +3,7 @@ import Head from "next/head";
 import { Content } from "../../components/Content";
 import { GetServerSideProps } from "next";
 import { ParsedUrlQuery } from "querystring";
-import dynamic from "next/dynamic";
-
-const Web3Provider = dynamic(() => import("@fewcha/web3-react"), {
-  ssr: false,
-});
+import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
 
 interface IParams extends ParsedUrlQuery {
   address: string[];
@@ -35,6 +31,8 @@ type ResponseData = {
 
 type HomeProps = {
   data: ResponseData;
+  pool: string;
+  owner: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -54,11 +52,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     )
   ).json();
   return {
-    props: { data }, // will be passed to the page component as props
+    props: { data, pool, owner }, // will be passed to the page component as props
   };
 };
 
-const Home = ({ data }: HomeProps) => {
+const Home = ({ data, pool, owner }: HomeProps) => {
   return (
     <>
       <Head>
@@ -66,9 +64,7 @@ const Home = ({ data }: HomeProps) => {
         <meta name="description" content="SWTB Staking Dashboard" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Web3Provider>
-        <Content data={data} />
-      </Web3Provider>
+      <Content data={data} pool={pool} owner={owner} />
     </>
   );
 };

@@ -31,38 +31,57 @@ import {
   TabPanel,
 } from "@chakra-ui/react";
 
-// import dynamic from "next/dynamic";
-// const { ConnectWallet, useWeb3 } = dynamic(() => import("@fewcha/web3-react"), {
-//   ssr: false,
-// });
-
 import * as React from "react";
 import { FiDownloadCloud } from "react-icons/fi";
 import { Stat } from "./Stat";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
 import numeral from "numeral";
-import { ConnectWallet, useWeb3 } from "@fewcha/web3-react";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
 const formatAptos = (val: string, decimals?: number) =>
   BigNumber(val)
     .shiftedBy(-8)
     .toFormat(decimals ?? 0);
+
 interface ContentProps {
   data: any;
+  pool: string;
+  owner: string;
 }
 
-export const Content = ({ data }: ContentProps) => {
+export const Content = ({ data, pool, owner }: ContentProps) => {
   const {
+    connect,
     account,
-    balance,
-    isConnected,
     network,
-    fewcha,
-    martian,
-    currentWallet,
-  } = useWeb3();
-  console.log(martian);
+    connected,
+    disconnect,
+    wallet,
+    wallets,
+    signAndSubmitTransaction,
+    signTransaction,
+    signMessage,
+    signMessageAndVerify,
+  } = useWallet();
+
+  const onSignAndSubmitTransaction = async () => {
+    console.log(pool, owner);
+    const payload = {
+      type: "entry_function_payload",
+      function: "0x1::staking_contract::request_commission",
+      type_arguments: ["0x1::staking_contract::RequestCommission"], // type
+      arguments: [owner, pool], // account is first arg as &signer
+    };
+
+    try {
+      const response = await signAndSubmitTransaction(payload);
+      console.log(response);
+    } catch (error: any) {
+      console.log("error", error);
+    }
+  };
+
   return (
     <Stack spacing={{ base: "8", lg: "6" }}>
       <Stack
@@ -78,8 +97,19 @@ export const Content = ({ data }: ContentProps) => {
             Dashboard
           </Heading>
           <Text color="muted">All important metrics at a glance</Text>
-          {!isConnected && <ConnectWallet type="list" />}
-          {isConnected && <span>Wallet connected: {currentWallet}.</span>}
+          {connected && (
+            <div>
+              <Box mb={2}>
+                <Text>
+                  {wallet?.name} wallet with address {account?.address} is
+                  connected.
+                </Text>
+              </Box>
+              <Button onClick={onSignAndSubmitTransaction}>
+                Send 1 APT to Parker.
+              </Button>
+            </div>
+          )}
         </Stack>
         <Stack direction="row" spacing="3">
           {/* <Button

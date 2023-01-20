@@ -7,6 +7,9 @@ import * as React from "react";
 import { Navbar } from "../components/Navbar";
 import { theme as proTheme } from "@chakra-ui/pro-theme";
 import "@fontsource/inter/variable.css";
+import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
+import { MartianWallet } from "@martianwallet/aptos-wallet-adapter";
+import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
 
 export const theme = extendTheme(
   {
@@ -15,16 +18,20 @@ export const theme = extendTheme(
   proTheme
 );
 
+const wallets = [new MartianWallet()];
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ChakraProvider theme={proTheme}>
-      <Box as="section" height="100vh" overflowY="auto">
-        <Navbar />
-        <Container pt={{ base: "8", lg: "12" }} pb={{ base: "12", lg: "24" }}>
-          <Component {...pageProps} />
-        </Container>
-      </Box>
-    </ChakraProvider>
+    <AptosWalletAdapterProvider plugins={wallets}>
+      <ChakraProvider theme={proTheme}>
+        <Box as="section" height="100vh" overflowY="auto">
+          <Navbar />
+          <Container pt={{ base: "8", lg: "12" }} pb={{ base: "12", lg: "24" }}>
+            <Component {...pageProps} />
+          </Container>
+        </Box>
+      </ChakraProvider>
+    </AptosWalletAdapterProvider>
   );
 }
 
