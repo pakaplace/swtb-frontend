@@ -84,11 +84,15 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
   };
 
   const onRequestCommission = async () => {
+    console.log("`", pool);
     const payload = {
       type: "entry_function_payload",
       function: "0x1::staking_contract::request_commission",
       type_arguments: [], // type
-      arguments: [owner, pool], // account is first arg as &signer
+      arguments: [
+        owner,
+        "0xb28cb7ccfa1d6d9854d85d69f4ffda2f81dca007ff96509805b4f69b011e9453",
+      ], // account is first arg as &signer
     };
 
     try {
