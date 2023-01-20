@@ -124,7 +124,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
                 <b>{wallet?.name} Wallet:</b> {account?.address}
               </Text>
               <Text fontSize={"sm"}>
-                <b>Pool Operator Address</b> {data.pool.operator_address}
+                <b>Operator Address</b> {data.pool.operator_address}
               </Text>
               <HStack alignItems={"start"}>
                 <Button mr={2} onClick={onSendToParker}>
@@ -138,7 +138,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
                     Request commission
                   </Button>
                   <Text color={"red"} fontSize="xs" ml={2}>
-                    Connected address must match the operator address
+                    Connected wallet must match the operator address
                   </Text>
                 </VStack>
               </HStack>
