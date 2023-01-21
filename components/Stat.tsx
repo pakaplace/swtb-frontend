@@ -32,7 +32,7 @@ export const Stat = (props: Props) => {
     <Box
       bg="bg-surface"
       borderRadius="lg"
-      boxShadow={useColorModeValue("sm", "sm-dark")}
+      boxShadow={useColorModeValue("xs", "xs-dark")}
       {...boxProps}
     >
       <Box px={{ base: "4", md: "6" }} py={{ base: "5", md: "6" }}>
@@ -50,9 +50,13 @@ export const Stat = (props: Props) => {
             {/* <Icon as={FiMoreVertical} boxSize="5" color="muted" /> */}
           </HStack>
           <HStack justify="space-between">
-            <Heading size={useBreakpointValue({ base: "3xl", md: "md" })}>
+            <Text
+              fontWeight={"semibold"}
+              fontSize={useBreakpointValue({ base: "2xl", md: "3xl" })}
+              whiteSpace={"pre"}
+            >
               {value}
-            </Heading>
+            </Text>
             {/* <Badge variant="subtle" colorScheme={delta.isUpwardsTrend ? 'green' : 'red'}>
                 <HStack spacing="1">
                   <Icon as={delta.isUpwardsTrend ? FiArrowUpRight : FiArrowDownRight} />

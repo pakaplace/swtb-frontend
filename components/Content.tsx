@@ -41,6 +41,7 @@ import {
   RequestCommissionEvent,
   WithdrawStakeEvent,
 } from "../pages/api/getPerformance";
+import { MyHeading } from "./MyHeading";
 import { Stat } from "./Stat";
 
 const formatAptos = (val: string, decimals?: number) =>
@@ -157,12 +158,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
       </Stack>
 
       <Stack spacing={{ base: "5", lg: "6" }}>
-        <Heading
-          size={useBreakpointValue({ base: "xs", lg: "sm" })}
-          fontWeight="medium"
-        >
-          Pool Overview
-        </Heading>{" "}
+        <MyHeading>Pool Overview</MyHeading>{" "}
         <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
           <Stat
             label={"Curr Principal"}
@@ -214,12 +210,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
         /> */}
         </SimpleGrid>
         <Divider />
-        <Heading
-          size={useBreakpointValue({ base: "xs", lg: "sm" })}
-          fontWeight="medium"
-        >
-          Commissions
-        </Heading>{" "}
+        <MyHeading>Commissions</MyHeading>
         <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
           <Stat
             label={"Commission Percentage"}
@@ -243,16 +234,11 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
           <Stat
             label={"Next Unlock At"}
             value={dayjs(data.pool.lockup_expiration_utc_time).format(
-              "MM/DD/YY hh:mm A"
+              "MM/DD/YY[\n]hh:mm A"
             )}
           />
         </SimpleGrid>
-        <Heading
-          size={useBreakpointValue({ base: "xs", lg: "sm" })}
-          fontWeight="medium"
-        >
-          Current Epoch Performance
-        </Heading>{" "}
+        <MyHeading>Current Epoch Performance</MyHeading>
         <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
           <Stat label={"Epoch"} value={data.epoch} />
           <Stat
@@ -286,14 +272,9 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
           />
         </SimpleGrid>
       </Stack>
-      <Heading
-        size={useBreakpointValue({ base: "xs", lg: "sm" })}
-        fontWeight="medium"
-      >
-        Stake Pool Management
-      </Heading>
+      <MyHeading>Stake Pool Management</MyHeading>
       <Card minH="xs">
-        <Tabs>
+        <Tabs pt={1} px={1}>
           <TabList>
             <Tab>Epoch Rewards</Tab>
             <Tab>Requested Commissions</Tab>
