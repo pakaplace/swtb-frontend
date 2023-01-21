@@ -1,5 +1,3 @@
-import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
-import type { NextPage } from "next";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { ParsedUrlQuery } from "querystring";

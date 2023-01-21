@@ -14,15 +14,18 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spacer,
   Text,
+  Tooltip,
   VStack,
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import * as React from "react";
+import { useState } from "react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import { FiHelpCircle, FiSearch, FiSettings } from "react-icons/fi";
+import { TbCheck, TbCopy } from "react-icons/tb";
 
 import { Sidebar } from "../components/Sidebar";
 import { Logo } from "./Logo";
@@ -37,6 +40,7 @@ const WalletModal = (props: WalletModalProps) => {
   const { isOpen, onClose } = props;
   const { wallets, wallet, connect, disconnect, connected, account } =
     useWallet();
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -77,10 +81,41 @@ const WalletModal = (props: WalletModalProps) => {
           )}
           {connected && (
             <Box>
-              <Text mb={2} fontSize={"sm"}>
-                <b>{wallet?.name} Wallet:</b> {account?.address}
-              </Text>
-              <Button variant={"solid"} onClick={disconnect}>
+              <Text fontWeight={"bold"}>{wallet?.name} Wallet:</Text>
+              <Flex
+                bgColor={"var(--chakra-colors-gray-50)"}
+                borderRadius={"md"}
+                p={2}
+                my={2}
+                alignItems={"center"}
+                justifyContent="space-between"
+              >
+                <Text
+                  overflow="hidden"
+                  whiteSpace={"nowrap"}
+                  textOverflow="ellipsis"
+                  mb={2}
+                  pr={3}
+                  fontWeight={"medium"}
+                  fontSize={"sm"}
+                  margin={0}
+                >
+                  {account?.address}
+                </Text>
+                <CopyToClipboard text={account?.address}>
+                  <Tooltip label="Copy to clipboard">
+                    <Box>
+                      <TbCopy cursor={"pointer"} size={18} />
+                    </Box>
+                  </Tooltip>
+                </CopyToClipboard>
+              </Flex>
+              <Button
+                variant={"solid"}
+                colorScheme="red"
+                onClick={disconnect}
+                size="sm"
+              >
                 Disconnect
               </Button>
             </Box>
@@ -110,10 +145,6 @@ export const Navbar = () => {
               <Button onClick={() => router.push("/")}>Home</Button>
               <Button onClick={onOpen}>Manage Wallet</Button>
               <WalletModal isOpen={isOpen} onClose={onClose} />
-              {/* <Button aria-current="page">Dashboard</Button> */}
-              {/* <Button>Tasks</Button>
-                <Button>Bookmarks</Button>
-                <Button>Users</Button> */}
             </ButtonGroup>
           </HStack>
           {/* {isDesktop ? (
