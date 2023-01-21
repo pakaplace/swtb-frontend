@@ -3,8 +3,8 @@ import {
   Box,
   Button,
   Divider,
-  Heading,
   HStack,
+  Heading,
   Icon,
   Stack,
   Text,
@@ -38,13 +38,19 @@ export const Stat = (props: Props) => {
       <Box px={{ base: "4", md: "6" }} py={{ base: "5", md: "6" }}>
         <Stack>
           <HStack justify="flex-start">
-            <Text fontSize="sm" color="muted">
+            <Text
+              casing={"uppercase"}
+              fontWeight={"medium"}
+              fontSize="xs"
+              letterSpacing={"1px"}
+              color="muted"
+            >
               {label}
             </Text>
             {/* <Icon as={FiMoreVertical} boxSize="5" color="muted" /> */}
           </HStack>
           <HStack justify="space-between">
-            <Heading size={useBreakpointValue({ base: "sm", md: "md" })}>
+            <Heading size={useBreakpointValue({ base: "3xl", md: "md" })}>
               {value}
             </Heading>
             {/* <Badge variant="subtle" colorScheme={delta.isUpwardsTrend ? 'green' : 'red'}>

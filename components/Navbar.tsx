@@ -1,30 +1,101 @@
+import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
+import { WalletReadyState, useWallet } from "@aptos-labs/wallet-adapter-react";
 import {
-  Avatar,
   Box,
   Button,
   ButtonGroup,
   Container,
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
   Flex,
   HStack,
-  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Spacer,
+  Text,
+  VStack,
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import * as React from "react";
 import { FiHelpCircle, FiSearch, FiSettings } from "react-icons/fi";
-import { Logo } from "./Logo";
+
 import { Sidebar } from "../components/Sidebar";
+import { Logo } from "./Logo";
 import { ToggleButton } from "./ToggleButton";
-import { useRouter } from "next/router";
-import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
-import { useWallet, WalletReadyState } from "@aptos-labs/wallet-adapter-react";
+
+interface WalletModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const WalletModal = (props: WalletModalProps) => {
+  const { isOpen, onClose } = props;
+  const { wallets, wallet, connect, disconnect, connected, account } =
+    useWallet();
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>
+          {!connected ? "Connect a Wallet" : "Wallet Connected"}
+        </ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          {!connected && (
+            <VStack>
+              {wallets.map((wallet) => (
+                <Flex
+                  alignItems="center"
+                  justifyContent={"space-between"}
+                  width="100%"
+                  pb={2}
+                >
+                  <Box>
+                    <Text>{wallet.name}</Text>
+                  </Box>
+                  <Button
+                    mr={3}
+                    colorScheme={"black"}
+                    variant={"outline"}
+                    disabled={wallet.readyState !== WalletReadyState.Installed}
+                    key={wallet.name}
+                    size={"sm"}
+                    onClick={() => {
+                      connect(wallet.name);
+                    }}
+                  >
+                    Connect
+                  </Button>
+                </Flex>
+              ))}
+            </VStack>
+          )}
+          {connected && (
+            <Box>
+              <Text mb={2} fontSize={"sm"}>
+                <b>{wallet?.name} Wallet:</b> {account?.address}
+              </Text>
+              <Button variant={"solid"} onClick={disconnect}>
+                Disconnect
+              </Button>
+            </Box>
+          )}
+        </ModalBody>
+
+        <ModalFooter></ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+};
 
 export const Navbar = () => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
 
   const { connect, connected, disconnect, wallets } = useWallet();
@@ -37,28 +108,8 @@ export const Navbar = () => {
             <Logo />
             <ButtonGroup variant="ghost-on-accent" spacing="1">
               <Button onClick={() => router.push("/")}>Home</Button>
-              {/* {!connected && <WalletSelector />} */}
-              {!connected && (
-                <>
-                  {wallets.map((wallet) => (
-                    <Button
-                      className={`bg-blue-500  text-white font-bold py-2 px-4 rounded mr-4 ${
-                        wallet.readyState !== "Installed"
-                          ? "opacity-50 cursor-not-allowed"
-                          : "hover:bg-blue-700"
-                      }`}
-                      disabled={
-                        wallet.readyState !== WalletReadyState.Installed
-                      }
-                      key={wallet.name}
-                      onClick={() => connect(wallet.name)}
-                    >
-                      <>{wallet.name}</>
-                    </Button>
-                  ))}
-                </>
-              )}
-              {connected && <Button onClick={disconnect}>Disconnect</Button>}
+              <Button onClick={onOpen}>Manage Wallet</Button>
+              <WalletModal isOpen={isOpen} onClose={onClose} />
               {/* <Button aria-current="page">Dashboard</Button> */}
               {/* <Button>Tasks</Button>
                 <Button>Bookmarks</Button>

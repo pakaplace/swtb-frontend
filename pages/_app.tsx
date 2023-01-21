@@ -1,16 +1,17 @@
-import "../styles/globals.css";
-import type { AppProps } from "next/app";
+import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
+import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
+import { theme as proTheme } from "@chakra-ui/pro-theme";
 import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
 import { Box, Container } from "@chakra-ui/react";
-import * as React from "react";
-import { Navbar } from "../components/Navbar";
-import { theme as proTheme } from "@chakra-ui/pro-theme";
 import "@fontsource/inter/variable.css";
-import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
 import { MartianWallet } from "@martianwallet/aptos-wallet-adapter";
+import type { AppProps } from "next/app";
 import { PetraWallet } from "petra-plugin-wallet-adapter";
-import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
+import * as React from "react";
+
+import { Navbar } from "../components/Navbar";
+import "../styles/globals.css";
 
 export const theme = extendTheme(
   {

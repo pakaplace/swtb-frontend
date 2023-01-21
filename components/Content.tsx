@@ -1,3 +1,4 @@
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import {
   Box,
   BoxProps,
@@ -5,43 +6,42 @@ import {
   Divider,
   FormControl,
   FormErrorMessage,
-  Heading,
   HStack,
+  Heading,
   SimpleGrid,
   Stack,
   Text,
+  VStack,
   useBreakpointValue,
   useColorModeValue,
-  VStack,
 } from "@chakra-ui/react";
 import {
-  RequestCommissionEvent,
-  AddStakeEvent,
-  WithdrawStakeEvent,
-} from "../pages/api/getPerformance";
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  TableCaption,
-  Tabs,
-  TabList,
-  TabPanels,
   Tab,
+  TabList,
   TabPanel,
+  TabPanels,
+  Table,
+  TableCaption,
+  TableContainer,
+  Tabs,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
 } from "@chakra-ui/react";
-
-import * as React from "react";
-import { FiDownloadCloud } from "react-icons/fi";
-import { Stat } from "./Stat";
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
 import numeral from "numeral";
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import * as React from "react";
+import { FiDownloadCloud } from "react-icons/fi";
+
+import {
+  AddStakeEvent,
+  RequestCommissionEvent,
+  WithdrawStakeEvent,
+} from "../pages/api/getPerformance";
+import { Stat } from "./Stat";
 
 const formatAptos = (val: string, decimals?: number) =>
   BigNumber(val)
