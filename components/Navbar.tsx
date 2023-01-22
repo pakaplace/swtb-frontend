@@ -7,145 +7,14 @@ import {
   Container,
   Flex,
   HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  Text,
-  Tooltip,
-  VStack,
   useBreakpointValue,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import * as React from "react";
-import { useState } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { FiHelpCircle, FiSearch, FiSettings } from "react-icons/fi";
-import { TbCheck, TbCopy } from "react-icons/tb";
 
-import { Sidebar } from "../components/Sidebar";
 import { Logo } from "./Logo";
-import { ToggleButton } from "./ToggleButton";
-
-interface WalletModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const WalletModal = (props: WalletModalProps) => {
-  const { isOpen, onClose } = props;
-  const { wallets, wallet, connect, disconnect, connected, account } =
-    useWallet();
-  const toast = useToast();
-
-  const onCopyToClipboard = () => {
-    toast({
-      title: "Wallet address copied to clipboard",
-      status: "success",
-      duration: 2000,
-      isClosable: true,
-      position: "top",
-      variant: "subtle",
-    });
-  };
-
-  return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          {!connected ? "Connect a Wallet" : "Wallet Connected"}
-        </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          {!connected && (
-            <VStack>
-              {wallets.map((wallet, idx) => (
-                <Flex
-                  key={idx}
-                  alignItems="center"
-                  justifyContent={"space-between"}
-                  width="100%"
-                  pb={2}
-                >
-                  <Box>
-                    <Text>{wallet.name}</Text>
-                  </Box>
-                  <Button
-                    mr={3}
-                    colorScheme={"black"}
-                    variant={"outline"}
-                    disabled={wallet.readyState !== WalletReadyState.Installed}
-                    key={wallet.name}
-                    size={"sm"}
-                    onClick={() => {
-                      connect(wallet.name);
-                    }}
-                  >
-                    Connect
-                  </Button>
-                </Flex>
-              ))}
-            </VStack>
-          )}
-          {connected && (
-            <Box>
-              <Text fontWeight={"bold"}>{wallet?.name} Wallet:</Text>
-              <Flex
-                bgColor={"var(--chakra-colors-gray-50)"}
-                borderRadius={"md"}
-                p={2}
-                my={2}
-                alignItems={"center"}
-                justifyContent="space-between"
-              >
-                <Text
-                  overflow="hidden"
-                  whiteSpace={"nowrap"}
-                  textOverflow="ellipsis"
-                  mb={2}
-                  pr={3}
-                  fontWeight={"medium"}
-                  fontSize={"sm"}
-                  margin={0}
-                >
-                  {account?.address}
-                </Text>
-                <CopyToClipboard
-                  text={account?.address || ""}
-                  onCopy={onCopyToClipboard}
-                >
-                  <Box>
-                    <Tooltip label="Copy to clipboard">
-                      <span>
-                        <TbCopy cursor={"pointer"} size={18} />
-                      </span>
-                    </Tooltip>
-                  </Box>
-                </CopyToClipboard>
-              </Flex>
-              <Button
-                variant={"solid"}
-                colorScheme="red"
-                onClick={disconnect}
-                size="sm"
-              >
-                Disconnect
-              </Button>
-            </Box>
-          )}
-        </ModalBody>
-
-        <ModalFooter></ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
-};
+import WalletModal from "./WalletModal";
 
 export const Navbar = () => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
