@@ -43,6 +43,17 @@ const WalletModal = (props: WalletModalProps) => {
     useWallet();
   const toast = useToast();
 
+  const onCopyToClipboard = () => {
+    toast({
+      title: "Wallet address copied to clipboard",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+      position: "top",
+      variant: "subtle",
+    });
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -105,7 +116,10 @@ const WalletModal = (props: WalletModalProps) => {
                 >
                   {account?.address}
                 </Text>
-                <CopyToClipboard text={account?.address || ""}>
+                <CopyToClipboard
+                  text={account?.address || ""}
+                  onCopy={onCopyToClipboard}
+                >
                   <Box>
                     <Tooltip label="Copy to clipboard">
                       <span>
