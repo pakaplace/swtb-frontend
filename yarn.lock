@@ -4123,6 +4123,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fewcha-plugin-wallet-adapter@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "fewcha-plugin-wallet-adapter@npm:0.1.1"
+  dependencies:
+    "@aptos-labs/wallet-adapter-core": 0.1.7
+    "@fewcha/web3": ^0.1.37
+    aptos: ^1.4.0
+  checksum: 15df9bc51f7864bc07cff9f4ad6399e62a64463af1fa5755cceba142e043803a7e4e49607f530414f00c5413b8d5cdff678b1a014996c5da610686a763a96d39
+  languageName: node
+  linkType: hard
+
 "file-entry-cache@npm:^6.0.1":
   version: 6.0.1
   resolution: "file-entry-cache@npm:6.0.1"
@@ -7043,6 +7054,7 @@ __metadata:
     eslint: 8.25.0
     eslint-config-next: 12.3.1
     eslint-config-prettier: ^8.5.0
+    fewcha-plugin-wallet-adapter: ^0.1.1
     framer-motion: ^7.5.3
     next: 12.3.1
     numeral: ^2.0.6

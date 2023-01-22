@@ -1,5 +1,3 @@
-import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
-import { WalletReadyState, useWallet } from "@aptos-labs/wallet-adapter-react";
 import {
   Box,
   Button,
@@ -20,8 +18,6 @@ export const Navbar = () => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
-
-  const { connect, connected, disconnect, wallets } = useWallet();
 
   return (
     <Box as="nav" bg="bg-accent" color="on-accent">

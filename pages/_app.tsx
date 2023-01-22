@@ -1,33 +1,17 @@
 import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
+import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
+import { theme as proTheme } from "@chakra-ui/pro-theme";
+import { Box, ChakraProvider, Container, extendTheme } from "@chakra-ui/react";
 import "@fontsource/inter/variable.css";
-import "../styles/globals.css";
-
-import {
-    PetraWallet
-} from "petra-plugin-wallet-adapter";
+import { MartianWallet } from "@martianwallet/aptos-wallet-adapter";
+import { FewchaWallet } from "fewcha-plugin-wallet-adapter";
+import type { AppProps } from "next/app";
+import { PetraWallet } from "petra-plugin-wallet-adapter";
 import * as React from "react";
 
-import {
-    AptosWalletAdapterProvider
-} from "@aptos-labs/wallet-adapter-react";
-import {
-    theme as proTheme
-} from "@chakra-ui/pro-theme";
-import {
-    Box,
-    ChakraProvider,
-    Container,
-    extendTheme
-} from "@chakra-ui/react";
-import {
-    MartianWallet
-} from "@martianwallet/aptos-wallet-adapter";
+import { Navbar } from "../components/Navbar";
+import "../styles/globals.css";
 
-import {
-    Navbar
-} from "../components/Navbar";
-
-import type { AppProps } from "next/app";
 export const theme = extendTheme(
   {
     colors: { ...proTheme.colors, brand: proTheme.colors.purple },
@@ -35,7 +19,7 @@ export const theme = extendTheme(
   proTheme
 );
 
-const wallets = [new MartianWallet(), new PetraWallet()];
+const wallets = [new MartianWallet(), new PetraWallet(), new FewchaWallet()];
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

@@ -50,6 +50,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint", "npm:8.25.0"],\
             ["eslint-config-next", "virtual:dcdd5042586ee8ef0380edf61dfc83d3f22122a5ffc1e95ce4e71629e883372ed8dfd93e3f443654725d086822ce941eab78a328bb0b241a0c655f06f96d81a1#npm:12.3.1"],\
             ["eslint-config-prettier", "virtual:dcdd5042586ee8ef0380edf61dfc83d3f22122a5ffc1e95ce4e71629e883372ed8dfd93e3f443654725d086822ce941eab78a328bb0b241a0c655f06f96d81a1#npm:8.6.0"],\
+            ["fewcha-plugin-wallet-adapter", "npm:0.1.1"],\
             ["framer-motion", "virtual:dcdd5042586ee8ef0380edf61dfc83d3f22122a5ffc1e95ce4e71629e883372ed8dfd93e3f443654725d086822ce941eab78a328bb0b241a0c655f06f96d81a1#npm:7.10.3"],\
             ["next", "virtual:dcdd5042586ee8ef0380edf61dfc83d3f22122a5ffc1e95ce4e71629e883372ed8dfd93e3f443654725d086822ce941eab78a328bb0b241a0c655f06f96d81a1#npm:12.3.1"],\
             ["numeral", "npm:2.0.6"],\
@@ -6092,6 +6093,18 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
+      ["fewcha-plugin-wallet-adapter", [\
+        ["npm:0.1.1", {\
+          "packageLocation": "./.yarn/cache/fewcha-plugin-wallet-adapter-npm-0.1.1-45d69e1db5-15df9bc51f.zip/node_modules/fewcha-plugin-wallet-adapter/",\
+          "packageDependencies": [\
+            ["fewcha-plugin-wallet-adapter", "npm:0.1.1"],\
+            ["@aptos-labs/wallet-adapter-core", "npm:0.1.7"],\
+            ["@fewcha/web3", "npm:0.1.37"],\
+            ["aptos", "npm:1.5.0"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
       ["file-entry-cache", [\
         ["npm:6.0.1", {\
           "packageLocation": "./.yarn/cache/file-entry-cache-npm-6.0.1-31965cf0af-f49701feaa.zip/node_modules/file-entry-cache/",\
@@ -9982,6 +9995,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["eslint", "npm:8.25.0"],\
             ["eslint-config-next", "virtual:dcdd5042586ee8ef0380edf61dfc83d3f22122a5ffc1e95ce4e71629e883372ed8dfd93e3f443654725d086822ce941eab78a328bb0b241a0c655f06f96d81a1#npm:12.3.1"],\
             ["eslint-config-prettier", "virtual:dcdd5042586ee8ef0380edf61dfc83d3f22122a5ffc1e95ce4e71629e883372ed8dfd93e3f443654725d086822ce941eab78a328bb0b241a0c655f06f96d81a1#npm:8.6.0"],\
+            ["fewcha-plugin-wallet-adapter", "npm:0.1.1"],\
             ["framer-motion", "virtual:dcdd5042586ee8ef0380edf61dfc83d3f22122a5ffc1e95ce4e71629e883372ed8dfd93e3f443654725d086822ce941eab78a328bb0b241a0c655f06f96d81a1#npm:7.10.3"],\
             ["next", "virtual:dcdd5042586ee8ef0380edf61dfc83d3f22122a5ffc1e95ce4e71629e883372ed8dfd93e3f443654725d086822ce941eab78a328bb0b241a0c655f06f96d81a1#npm:12.3.1"],\
             ["numeral", "npm:2.0.6"],\

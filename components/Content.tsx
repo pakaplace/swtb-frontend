@@ -4,16 +4,16 @@ import {
   BoxProps,
   Button,
   Divider,
-  FormControl,
-  FormErrorMessage,
   HStack,
   Heading,
   SimpleGrid,
   Stack,
   Text,
+  Tooltip,
   VStack,
   useBreakpointValue,
   useColorModeValue,
+  useToast,
 } from "@chakra-ui/react";
 import {
   Tab,
@@ -34,6 +34,7 @@ import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
 import numeral from "numeral";
 import * as React from "react";
+import CopyToClipboard from "react-copy-to-clipboard";
 import { FiDownloadCloud } from "react-icons/fi";
 
 import {
@@ -41,6 +42,7 @@ import {
   RequestCommissionEvent,
   WithdrawStakeEvent,
 } from "../pages/api/getPerformance";
+import CopyableField from "./CopyableField";
 import { MyHeading } from "./MyHeading";
 import { Stat } from "./Stat";
 
@@ -69,6 +71,13 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
     signMessage,
     signMessageAndVerify,
   } = useWallet();
+  const toast = useToast({
+    variant: "subtle",
+    position: "top",
+  });
+
+  const userIsOperator: boolean =
+    data.pool.operator_address === account?.address;
 
   const onSendToParker = async () => {
     const PARKER =
@@ -82,9 +91,18 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
 
     try {
       const response = await signAndSubmitTransaction(payload);
-      console.log(response);
+      toast({
+        title: "Transaction success",
+        description: "1 APT was successfully transferred to Parker",
+        status: "success",
+      });
     } catch (error: any) {
-      console.log("error", error);
+      console.error(error);
+      toast({
+        status: "error",
+        title: "Transaction failed",
+        description: error,
+      });
     }
   };
 
@@ -105,13 +123,14 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
   };
 
   return (
-    <Stack spacing={{ base: "8", lg: "6" }}>
+    <Stack spacing={{ base: "8", lg: "6" }} width="100%">
       <Stack
         spacing="4"
         direction={{ base: "column", lg: "row" }}
         justify="space-between"
+        width="100%"
       >
-        <Stack spacing="1">
+        <Stack spacing="1" width="100%">
           <Heading
             size={useBreakpointValue({ base: "sm", lg: "md" })}
             fontWeight="medium"
@@ -119,32 +138,54 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
             Dashboard
           </Heading>
           <Text color="muted">All important metrics at a glance</Text>
-          {connected && (
-            <VStack mb={2} alignItems="start">
-              <Text fontSize={"sm"}>
-                <b>{wallet?.name} Wallet:</b> {account?.address}
-              </Text>
-              <Text fontSize={"sm"}>
-                <b>Operator Address</b> {data.pool.operator_address}
-              </Text>
-              <HStack alignItems={"start"}>
-                <Button mr={2} onClick={onSendToParker}>
-                  Send 1 APT to Parker
-                </Button>
-                <VStack alignItems={"start"}>
-                  <Button
-                    isDisabled={data.pool.operator_address !== account?.address}
-                    onClick={onRequestCommission}
-                  >
-                    Request commission
-                  </Button>
-                  <Text color={"red"} fontSize="xs" ml={2}>
-                    Connected wallet must match the operator address
-                  </Text>
-                </VStack>
-              </HStack>
-            </VStack>
-          )}
+          <Box justifyContent={"flex-start"}>
+            <MyHeading>Actions</MyHeading>
+            <Box
+              bg="bg-surface"
+              borderRadius="lg"
+              boxShadow={useColorModeValue("xs", "xs-dark")}
+              padding={3}
+              my={3}
+              alignItems="start"
+            >
+              {!connected && (
+                <Text size="sm" fontWeight={"book"}>
+                  Connect your wallet by clicking on "Manage Wallet" in the
+                  navbar to get started.
+                </Text>
+              )}
+              {connected && (
+                <>
+                  <Box>
+                    <Text fontWeight={"bold"}>Operator Address:</Text>
+                    <CopyableField content={data.pool.operator_address} />
+                  </Box>
+                  <HStack alignItems={"start"}>
+                    <Button mr={2} onClick={onSendToParker}>
+                      Send 1 APT to Parker
+                    </Button>
+                    <VStack alignItems={"start"}>
+                      <Tooltip
+                        label={
+                          userIsOperator
+                            ? ""
+                            : "Connected wallet must match the operator address"
+                        }
+                      >
+                        <Button
+                          isDisabled={!userIsOperator}
+                          onClick={onRequestCommission}
+                        >
+                          Request commission
+                        </Button>
+                      </Tooltip>
+                      <Text color={"red"} fontSize="xs" ml={2}></Text>
+                    </VStack>
+                  </HStack>
+                </>
+              )}
+            </Box>
+          </Box>
         </Stack>
         <Stack direction="row" spacing="3">
           {/* <Button
@@ -173,7 +214,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
             )}
           />
           <Stat
-            label={"Cummulative Rewards"}
+            label={"Cumulative Rewards"}
             value={formatAptos(data.managedPools[0].total_rewards)}
           />
           <Stat
@@ -326,7 +367,6 @@ const RewardsTable = ({ data }: { data: any }) => (
     </Table>
   </TableContainer>
 );
-
 const RequestCommissionsTable = ({ data }: { data: any }) => (
   <TableContainer>
     <Table variant="simple">
@@ -341,13 +381,16 @@ const RequestCommissionsTable = ({ data }: { data: any }) => (
       </Thead>
       <Tbody>
         {data.requestCommissionEvents.map(
-          ({
-            accumulated_rewards,
-            commission_amount,
-            operator,
-            pool_address,
-          }: RequestCommissionEvent) => (
-            <Tr>
+          (
+            {
+              accumulated_rewards,
+              commission_amount,
+              operator,
+              pool_address,
+            }: RequestCommissionEvent,
+            idx: number
+          ) => (
+            <Tr key={idx}>
               <Td>{formatAptos(accumulated_rewards, 2)}</Td>
               <Td>{formatAptos(commission_amount, 2)}</Td>
               <Td>{operator.slice(0, 8)}...</Td>
@@ -371,8 +414,8 @@ const AddStakeTable = ({ data }: { data: any }) => (
       </Thead>
       <Tbody>
         {data.addStakeEvents.map(
-          ({ amount_added, pool_address }: AddStakeEvent) => (
-            <Tr>
+          ({ amount_added, pool_address }: AddStakeEvent, idx: number) => (
+            <Tr key={idx}>
               <Td>{formatAptos(amount_added, 2)}</Td>
               <Td>{pool_address.slice(0, 8)}...</Td>
             </Tr>
@@ -394,10 +437,13 @@ const WithdrawalsTable = ({ data }: { data: any }) => (
       </Thead>
       <Tbody>
         {data.withdrawStakeEvents.map(
-          ({ amount_withdrawn, pool_address }: WithdrawStakeEvent) => (
-            <Tr>
+          (
+            { amount_withdrawn, pool_address }: WithdrawStakeEvent,
+            index: number
+          ) => (
+            <Tr key={index}>
               <Td>{formatAptos(amount_withdrawn, 2)}</Td>
-              <Td>{pool_address.slice(0, 8)}...</Td>{" "}
+              <Td>{pool_address.slice(0, 8)}... </Td>
             </Tr>
           )
         )}
