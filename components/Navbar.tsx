@@ -52,8 +52,9 @@ const WalletModal = (props: WalletModalProps) => {
         <ModalBody>
           {!connected && (
             <VStack>
-              {wallets.map((wallet) => (
+              {wallets.map((wallet, idx) => (
                 <Flex
+                  id={idx}
                   alignItems="center"
                   justifyContent={"space-between"}
                   width="100%"
@@ -102,13 +103,13 @@ const WalletModal = (props: WalletModalProps) => {
                 >
                   {account?.address}
                 </Text>
-                <CopyToClipboard text={account?.address}>
+                    <CopyToClipboard text={account?.address}>
+                        <Box>
                   <Tooltip label="Copy to clipboard">
-                    <Box>
-                      <TbCopy cursor={"pointer"} size={18} />
-                    </Box>
+                          <TbCopy cursor={"pointer"} size={18} />
                   </Tooltip>
-                </CopyToClipboard>
+                        </Box>
+                    </CopyToClipboard>
               </Flex>
               <Button
                 variant={"solid"}
