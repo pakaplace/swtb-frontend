@@ -313,7 +313,7 @@ const RewardsTable = ({ data }: { data: any }) => (
       </Thead>
       <Tbody>
         {data.previous_epoch_rewards.map((reward: string, i: number) => (
-          <Tr>
+          <Tr key={i}>
             <Td>
               {dayjs
                 .unix(data.current_epoch_start_time / 1_000_000 - 7200 * i)

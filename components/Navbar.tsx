@@ -19,6 +19,7 @@ import {
   VStack,
   useBreakpointValue,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import * as React from "react";
@@ -40,6 +41,7 @@ const WalletModal = (props: WalletModalProps) => {
   const { isOpen, onClose } = props;
   const { wallets, wallet, connect, disconnect, connected, account } =
     useWallet();
+  const toast = useToast();
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -54,7 +56,7 @@ const WalletModal = (props: WalletModalProps) => {
             <VStack>
               {wallets.map((wallet, idx) => (
                 <Flex
-                  id={idx}
+                  key={idx}
                   alignItems="center"
                   justifyContent={"space-between"}
                   width="100%"
@@ -103,13 +105,15 @@ const WalletModal = (props: WalletModalProps) => {
                 >
                   {account?.address}
                 </Text>
-                    <CopyToClipboard text={account?.address}>
-                        <Box>
-                  <Tooltip label="Copy to clipboard">
-                          <TbCopy cursor={"pointer"} size={18} />
-                  </Tooltip>
-                        </Box>
-                    </CopyToClipboard>
+                <CopyToClipboard text={account?.address || ""}>
+                  <Box>
+                    <Tooltip label="Copy to clipboard">
+                      <span>
+                        <TbCopy cursor={"pointer"} size={18} />
+                      </span>
+                    </Tooltip>
+                  </Box>
+                </CopyToClipboard>
               </Flex>
               <Button
                 variant={"solid"}
