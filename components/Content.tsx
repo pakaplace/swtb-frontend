@@ -79,14 +79,14 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
   const userIsOperator: boolean =
     data.pool.operator_address === account?.address;
 
-  const onSendToParker = async () => {
+  const onSendToSWTB = async () => {
     const PARKER =
       "0xdaa53cf262b0d298a9fcc4ec8aa94ff5c19708ca14698a3593a049bf58049d16";
     const payload = {
       type: "entry_function_payload",
       function: "0x1::coin::transfer",
       type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [PARKER, 1], // 1 is in Octas
+      arguments: [PARKER, 100000000], // 1 is in Octas
     };
 
     try {
@@ -289,9 +289,6 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
                 <CopyableField content={data.pool.operator_address} />
               </Box>
               <HStack alignItems={"start"}>
-                <Button mr={2} onClick={onSendToParker}>
-                  Send 1 APT to Parker
-                </Button>
                 <VStack alignItems={"start"}>
                   <Tooltip
                     label={
@@ -309,6 +306,9 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
                   </Tooltip>
                   <Text color={"red"} fontSize="xs" ml={2}></Text>
                 </VStack>
+                <Button mr={2} onClick={onSendToSWTB}>
+                  Tip 1 APT to SWTB
+                </Button>
               </HStack>
             </>
           )}
