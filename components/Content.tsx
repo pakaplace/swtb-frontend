@@ -152,54 +152,6 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
       </Stack>
 
       <Stack spacing={{ base: "5", lg: "6" }}>
-        <Box justifyContent={"flex-start"}>
-          <MyHeading>Actions</MyHeading>
-          <Box
-            bg="bg-surface"
-            borderRadius="lg"
-            boxShadow={useColorModeValue("xs", "xs-dark")}
-            padding={3}
-            my={3}
-            alignItems="start"
-          >
-            {!connected && (
-              <Text size="sm" fontWeight={"book"}>
-                Connect your wallet by clicking on "Manage Wallet" in the navbar
-                to get started.
-              </Text>
-            )}
-            {connected && (
-              <>
-                <Box>
-                  <Text fontWeight={"bold"}>Operator Address:</Text>
-                  <CopyableField content={data.pool.operator_address} />
-                </Box>
-                <HStack alignItems={"start"}>
-                  <Button mr={2} onClick={onSendToParker}>
-                    Send 1 APT to Parker
-                  </Button>
-                  <VStack alignItems={"start"}>
-                    <Tooltip
-                      label={
-                        userIsOperator
-                          ? ""
-                          : "Connected wallet must match the operator address"
-                      }
-                    >
-                      <Button
-                        isDisabled={!userIsOperator}
-                        onClick={onRequestCommission}
-                      >
-                        Request commission
-                      </Button>
-                    </Tooltip>
-                    <Text color={"red"} fontSize="xs" ml={2}></Text>
-                  </VStack>
-                </HStack>
-              </>
-            )}
-          </Box>
-        </Box>
         <MyHeading>Pool Overview</MyHeading>{" "}
         <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
           <Stat
@@ -314,6 +266,54 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
           />
         </SimpleGrid>
       </Stack>
+      <Box justifyContent={"flex-start"}>
+        <MyHeading>Actions</MyHeading>
+        <Box
+          bg="bg-surface"
+          borderRadius="lg"
+          boxShadow={useColorModeValue("xs", "xs-dark")}
+          padding={3}
+          my={3}
+          alignItems="start"
+        >
+          {!connected && (
+            <Text size="sm" fontWeight={"book"}>
+              Connect your wallet by clicking on "Manage Wallet" in the navbar
+              to get started.
+            </Text>
+          )}
+          {connected && (
+            <>
+              <Box>
+                <Text fontWeight={"bold"}>Your Operator Address:</Text>
+                <CopyableField content={data.pool.operator_address} />
+              </Box>
+              <HStack alignItems={"start"}>
+                <Button mr={2} onClick={onSendToParker}>
+                  Send 1 APT to Parker
+                </Button>
+                <VStack alignItems={"start"}>
+                  <Tooltip
+                    label={
+                      userIsOperator
+                        ? ""
+                        : "Connected wallet must match the operator or stake pool owner address"
+                    }
+                  >
+                    <Button
+                      isDisabled={!userIsOperator}
+                      onClick={onRequestCommission}
+                    >
+                      Request commission
+                    </Button>
+                  </Tooltip>
+                  <Text color={"red"} fontSize="xs" ml={2}></Text>
+                </VStack>
+              </HStack>
+            </>
+          )}
+        </Box>
+      </Box>
       <MyHeading>Stake Pool Management</MyHeading>
       <Card minH="xs">
         <Tabs pt={1} px={1}>
