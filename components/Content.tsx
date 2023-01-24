@@ -81,12 +81,12 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
 
   const onSendToSWTB = async () => {
     const SWTB =
-      "0xb28cb7ccfa1d6d9854d85d69f4ffda2f81dca007ff96509805b4f69b011e9453";
+      "0xe675be9a50576e2cecc4fef47ed3f061a2b616821a38ddbb04472fbdf17e3d95";
     const payload = {
       type: "entry_function_payload",
       function: "0x1::coin::transfer",
       type_arguments: ["0x1::aptos_coin::AptosCoin"],
-      arguments: [PARKER, 100000000], // 1 is in Octas
+      arguments: [SWTB, 100000000], // 1 is in Octas
     };
 
     try {
