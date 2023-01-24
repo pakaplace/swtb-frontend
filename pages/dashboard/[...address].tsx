@@ -1,8 +1,8 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import { Content } from "../../components/Content";
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { ParsedUrlQuery } from "querystring";
+
+import { Content } from "../../components/Content";
 
 interface IParams extends ParsedUrlQuery {
   address: string[];
@@ -30,6 +30,8 @@ type ResponseData = {
 
 type HomeProps = {
   data: ResponseData;
+  pool: string;
+  owner: string;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -49,11 +51,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     )
   ).json();
   return {
-    props: { data }, // will be passed to the page component as props
+    props: { data, pool, owner }, // will be passed to the page component as props
   };
 };
 
-const Home = ({ data }: HomeProps) => {
+const Home = ({ data, pool, owner }: HomeProps) => {
   return (
     <>
       <Head>
@@ -61,7 +63,7 @@ const Home = ({ data }: HomeProps) => {
         <meta name="description" content="SWTB Staking Dashboard" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Content data={data} />
+      <Content data={data} pool={pool} owner={owner} />
     </>
   );
 };

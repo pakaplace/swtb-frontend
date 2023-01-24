@@ -1,28 +1,22 @@
 import {
-  Avatar,
   Box,
   Button,
   ButtonGroup,
   Container,
-  Drawer,
-  DrawerContent,
-  DrawerOverlay,
   Flex,
   HStack,
-  IconButton,
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import * as React from "react";
-import { FiHelpCircle, FiSearch, FiSettings } from "react-icons/fi";
-import { Logo } from "./Logo";
-import { Sidebar } from "../components/Sidebar";
-import { ToggleButton } from "./ToggleButton";
 import { useRouter } from "next/router";
+import * as React from "react";
+
+import { Logo } from "./Logo";
+import WalletModal from "./WalletModal";
 
 export const Navbar = () => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
-  const { isOpen, onToggle, onClose } = useDisclosure();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
 
   return (
@@ -33,10 +27,8 @@ export const Navbar = () => {
             <Logo />
             <ButtonGroup variant="ghost-on-accent" spacing="1">
               <Button onClick={() => router.push("/")}>Home</Button>
-              {/* <Button aria-current="page">Dashboard</Button> */}
-              {/* <Button>Tasks</Button>
-                <Button>Bookmarks</Button>
-                <Button>Users</Button> */}
+              <Button onClick={onOpen}>Manage Wallet</Button>
+              <WalletModal isOpen={isOpen} onClose={onClose} />
             </ButtonGroup>
           </HStack>
           {/* {isDesktop ? (
