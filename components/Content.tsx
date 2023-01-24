@@ -80,8 +80,8 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
     data.pool.operator_address === account?.address;
 
   const onSendToSWTB = async () => {
-    const PARKER =
-      "0xdaa53cf262b0d298a9fcc4ec8aa94ff5c19708ca14698a3593a049bf58049d16";
+    const SWTB =
+      "0xb28cb7ccfa1d6d9854d85d69f4ffda2f81dca007ff96509805b4f69b011e9453";
     const payload = {
       type: "entry_function_payload",
       function: "0x1::coin::transfer",
