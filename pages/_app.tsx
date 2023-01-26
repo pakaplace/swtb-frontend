@@ -4,6 +4,7 @@ import { theme as proTheme } from "@chakra-ui/pro-theme";
 import { Box, ChakraProvider, Container, extendTheme } from "@chakra-ui/react";
 import "@fontsource/inter/variable.css";
 import { MartianWallet } from "@martianwallet/aptos-wallet-adapter";
+import { PontemWallet } from "@pontem/wallet-adapter-plugin";
 import { FewchaWallet } from "fewcha-plugin-wallet-adapter";
 import type { AppProps } from "next/app";
 import { PetraWallet } from "petra-plugin-wallet-adapter";
@@ -19,7 +20,12 @@ export const theme = extendTheme(
   proTheme
 );
 
-const wallets = [new MartianWallet(), new PetraWallet(), new FewchaWallet()];
+const wallets = [
+  new MartianWallet(),
+  new PetraWallet(),
+  new FewchaWallet(),
+  new PontemWallet(),
+];
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

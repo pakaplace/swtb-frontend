@@ -78,7 +78,7 @@
     eventemitter3 "^4.0.7"
     tweetnacl "^1.0.3"
 
-"@aptos-labs/wallet-adapter-core@0.1.7":
+"@aptos-labs/wallet-adapter-core@0.1.7", "@aptos-labs/wallet-adapter-core@^0.1.7":
   version "0.1.7"
   resolved "https://registry.yarnpkg.com/@aptos-labs/wallet-adapter-core/-/wallet-adapter-core-0.1.7.tgz#0a1c1fe1624e834cf2be990beb9de1d1d9cbc2ae"
   integrity sha512-g3HvX31kuFT5HqEe9Vh0ZgV1u0Otsfx54yeAwL7RO8CioBVBjYELhMsOYz0BOjecmAKhQ14G60VU8MqDyzYkIA==
@@ -1586,6 +1586,14 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@pontem/wallet-adapter-plugin@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@pontem/wallet-adapter-plugin/-/wallet-adapter-plugin-0.1.4.tgz#9ea97a2c561fd342586e86fbe2548a0b30b3680e"
+  integrity sha512-AHbclQx2rorD0CBKdQQfF6ifWTQUBmRstnj6M/l0e5n8GmcstX8RJUGx8l8o8BBv5B87aFAmYTXgNZQOTyKE+Q==
+  dependencies:
+    "@aptos-labs/wallet-adapter-core" "^0.1.7"
+    aptos "^1.4.0"
 
 "@popperjs/core@^2.9.3":
   version "2.11.6"
