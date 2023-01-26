@@ -1,20 +1,25 @@
+import {
+  Box,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+  HStack,
+  Heading,
+  Icon,
+  Input,
+  Stack,
+  Tooltip,
+  VStack,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
-import {
-  Box,
-  Input,
-  Stack,
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  FormHelperText,
-  useBreakpointValue,
-  Button,
-  Heading,
-} from "@chakra-ui/react";
 import { Router } from "next/router";
+import { useState } from "react";
+import { AiFillQuestionCircle } from "react-icons/ai";
 
 type HomeProps = {
   data: any;
@@ -71,14 +76,22 @@ const Index = ({ data }: HomeProps) => {
               </FormHelperText>
             ) : (
               <FormErrorMessage>
-                A valid hex address starting with "0x" is required.
+                A valid hex address starting with "0x" is required
               </FormErrorMessage>
             )}
           </FormControl>
           <FormControl isInvalid={!!ownerError}>
-            <FormLabel>Owner Address</FormLabel>
+            <VStack alignItems={"start"}>
+              <FormLabel>Stake Pool Owner Address</FormLabel>
+              <FormHelperText>
+                If you have a vesting contract, your owner address may be your
+                vesting contract address.
+              </FormHelperText>
+            </VStack>
+
             <Input
               type="hex"
+              mt={2}
               value={owner}
               onChange={(e) => setOwner(e.target.value)}
               onBlur={() => {
@@ -87,10 +100,9 @@ const Index = ({ data }: HomeProps) => {
                 setOwnerError(isInvalid);
               }}
             />
+
             {!ownerError ? (
-              <FormHelperText>
-                Please enter the address of the Stake Pool Owner
-              </FormHelperText>
+              <FormHelperText></FormHelperText>
             ) : (
               <FormErrorMessage>
                 A valid hex address starting with "0x" is required.
