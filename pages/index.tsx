@@ -35,7 +35,11 @@ const Index = ({ data }: HomeProps) => {
   const [poolError, setPoolError] = useState<boolean>(false);
   const [ownerError, setOwnerError] = useState<boolean>(false);
   const router = useRouter();
-
+  const network =
+    typeof router.query.network === "string" &&
+    router.query.network === "previewnet"
+      ? "previewnet"
+      : "mainnet";
   return (
     <>
       <Head>
@@ -114,7 +118,7 @@ const Index = ({ data }: HomeProps) => {
             isDisabled={!pool || !owner || poolError || ownerError}
             onClick={async () => {
               if (pool && owner && !poolError && !ownerError) {
-                router.push(`/dashboard/${pool}/${owner}`);
+                router.push(`/dashboard/${pool}/${owner}?network=${network}`);
               }
             }}
           >

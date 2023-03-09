@@ -64,16 +64,30 @@ type ResponseData = {
     total_stake: string;
     initialPrincipal: string;
     lockup_expiration_utc_time: Date;
+    current_rewards: string;
   };
   managedPools: any[];
   validatorConfig: any;
 };
+type ResponseError = {
+  error: string;
+};
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse<ResponseData | ResponseError>
 ) {
   let pool = req.query.pool as string;
+  let network = req.query.network as string;
+  const RPC_URL =
+    network === "previewnet"
+      ? process.env.API_URL_PREVIEWNET
+      : process.env.API_URL_MAINNET;
+  if (!RPC_URL) {
+    return res
+      .status(500)
+      .json({ error: "Missing RPC URL. Contact pleeplace@gmail.com" });
+  }
   if (pool.indexOf("0x") < 0) pool = "0x" + pool;
   let owner = req.query.owner as string;
   if (owner.indexOf("0x") < 0) owner = "0x" + owner;
@@ -103,8 +117,9 @@ export default async function handler(
   // const owner =
   //   "0xccc221485ee530f3981f4beca12f010d2e7bb38d3fe30bfcf7798d99f4aabb33";
   const [block_resource, reconfig_resource] = await Promise.all([
-    getAccountResource(CORE_CODE_ADDRESS, "0x1::block::BlockResource"),
+    getAccountResource(RPC_URL, CORE_CODE_ADDRESS, "0x1::block::BlockResource"),
     getAccountResource(
+      RPC_URL,
       CORE_CODE_ADDRESS,
       "0x1::reconfiguration::Configuration"
     ),
@@ -117,13 +132,23 @@ export default async function handler(
   let next_epoch_start_time = current_epoch_start_time + epoch_interval_secs;
 
   const [validatorSet, validatorPerformances] = await Promise.all([
-    getAccountResource(CORE_CODE_ADDRESS, "0x1::stake::ValidatorSet"),
-    getAccountResource(CORE_CODE_ADDRESS, "0x1::stake::ValidatorPerformance"),
+    getAccountResource(RPC_URL, CORE_CODE_ADDRESS, "0x1::stake::ValidatorSet"),
+    getAccountResource(
+      RPC_URL,
+      CORE_CODE_ADDRESS,
+      "0x1::stake::ValidatorPerformance"
+    ),
   ]);
   const validator = validatorSet.data.active_validators.find(
     (validator: any) => validator.addr === pool
   );
-  if (!validator) return console.error("validator not found");
+  if (!validator) {
+    return res.status(500).json({
+      error:
+        "Validator not found at that address. Check your selected nework and address",
+    });
+  }
+
   const validator_index = Number(validator.config.validator_index);
   const currentEpochPerformance =
     validatorPerformances.data.validators[validator_index];
@@ -147,21 +172,43 @@ export default async function handler(
     request_commission_events,
   ] = await Promise.all([
     getAccountEvents(
+      RPC_URL,
       pool,
       Resource.StakePool,
       StakePoolEvents.distribute_rewards,
       undefined,
       100
     ),
-    getAccountResource(pool, Resource.ValidatorConfig),
-    getAccountResource("0x1", Resource.StakingConfig),
-    getAccountResource(pool, Resource.StakePool),
-    getAccountResource(owner, Resource.StakingContract),
-    getAccountEvents(pool, Resource.StakePool, StakePoolEvents.add_stake),
-    getAccountEvents(pool, Resource.StakePool, StakePoolEvents.withdraw_stake),
-    getAccountEvents(pool, Resource.AptosCoin, AptosCoinEvents.withdraw),
-    getAccountEvents(pool, Resource.AptosCoin, AptosCoinEvents.deposit),
+    getAccountResource(RPC_URL, pool, Resource.ValidatorConfig),
+    getAccountResource(RPC_URL, "0x1", Resource.StakingConfig),
+    getAccountResource(RPC_URL, pool, Resource.StakePool),
+    getAccountResource(RPC_URL, owner, Resource.StakingContract),
     getAccountEvents(
+      RPC_URL,
+      pool,
+      Resource.StakePool,
+      StakePoolEvents.add_stake
+    ),
+    getAccountEvents(
+      RPC_URL,
+      pool,
+      Resource.StakePool,
+      StakePoolEvents.withdraw_stake
+    ),
+    getAccountEvents(
+      RPC_URL,
+      pool,
+      Resource.AptosCoin,
+      AptosCoinEvents.withdraw
+    ),
+    getAccountEvents(
+      RPC_URL,
+      pool,
+      Resource.AptosCoin,
+      AptosCoinEvents.deposit
+    ),
+    getAccountEvents(
+      RPC_URL,
       owner,
       Resource.StakingContract,
       StakingContractEvents.request_commission
@@ -180,16 +227,13 @@ export default async function handler(
     })
     .reverse();
   // .slice(0, 100);
-  // .reverse(); // sort by earliest
-
-  // console.log("dist rewards", distribute_rewards_events);
-  // console.log("epoch rewards", previous_epoch_rewards);
-  // console.log("Withdraw stake", withdraw_stake_events);
   let withdrawStakeEvents = withdraw_stake_events
     .map((event: any) => event.data)
     .reverse();
   let requestCommissionEvents: RequestCommissionEvent[] =
-    request_commission_events.map((event: any) => event.data).reverse();
+    request_commission_events?.length
+      ? request_commission_events.map((event: any) => event.data).reverse()
+      : [];
   let accumulatedRewards = BigNumber("0");
   let accumulatedCommissions = BigNumber("0");
   requestCommissionEvents.forEach((event: RequestCommissionEvent) => {
@@ -209,6 +253,10 @@ export default async function handler(
   );
   let pendingActive = stakePoolRes.data.pending_active.value;
   let pendingInactive = stakePoolRes.data.pending_inactive.value;
+
+  const currRewardsBN = BigNumber(total_stake).minus(
+    BigNumber(initialPrincipal)
+  );
 
   let resData: ResponseData = {
     epoch,
@@ -237,47 +285,54 @@ export default async function handler(
       lockup_expiration_utc_time: dayjs
         .unix(stakePoolRes?.data?.locked_until_secs)
         .toDate(),
+      current_rewards: currRewardsBN.toString(),
     },
     managedPools: [],
     validatorConfig: { ...validatorConfigRes },
   };
-  const managedStakingPools = managedStakingPoolRes.data.staking_contracts.data;
-  for (let i = 0; i < managedStakingPools.length; i++) {
-    // managedStakingPools[i].key
-    const commission_percentage = Number(
-      managedStakingPools[i].value.commission_percentage
-    );
-    const principal = managedStakingPools[i].value.principal;
-    const currRewardsBN = BigNumber(total_stake).minus(BigNumber(principal));
-    const totalRewardsBN = currRewardsBN.plus(accumulatedRewards);
-    const unlockedCommissionBN = totalRewardsBN.multipliedBy(
-      BigNumber(commission_percentage).dividedBy(BigNumber(100))
-    );
 
-    const daysSinceStart = dayjs().diff(dayjs("2022-10-13"), "day", true);
-    const commissionPerDayBN = unlockedCommissionBN.dividedBy(
-      BigNumber(daysSinceStart)
-    );
-    const rewardsPerDayBN = totalRewardsBN.dividedBy(BigNumber(daysSinceStart));
-    const apr = rewardsPerDayBN
-      .multipliedBy(BigNumber(365.25))
-      .dividedBy(principal)
-      .multipliedBy(BigNumber(100));
-    const unrequestedCommissions: string = unlockedCommissionBN
-      .minus(BigNumber(accumulatedCommissions))
-      .toString();
-    resData.managedPools.push({
-      pool_address: managedStakingPools[i].value.pool_address,
-      commission_percentage,
-      commission_not_yet_unlocked: unlockedCommissionBN.toString(),
-      unrequestedCommissions,
-      total_rewards: totalRewardsBN.toString(),
-      currRewards: currRewardsBN.toString(),
-      apr: apr.toNumber(),
-      rewardsPerDay: rewardsPerDayBN.toString(),
-      commissionPerDay: commissionPerDayBN.toString(),
-      principal,
-    });
+  if (managedStakingPoolRes?.data?.staking_contracts.data?.length) {
+    const managedStakingPools =
+      managedStakingPoolRes?.data?.staking_contracts.data;
+    for (let i = 0; i < managedStakingPools.length; i++) {
+      // managedStakingPools[i].key
+      const commission_percentage = Number(
+        managedStakingPools[i].value.commission_percentage
+      );
+      const principal = managedStakingPools[i].value.principal;
+      const currRewardsBN = BigNumber(total_stake).minus(BigNumber(principal));
+      const totalRewardsBN = currRewardsBN.plus(accumulatedRewards);
+      const unlockedCommissionBN = totalRewardsBN.multipliedBy(
+        BigNumber(commission_percentage).dividedBy(BigNumber(100))
+      );
+
+      const daysSinceStart = dayjs().diff(dayjs("2022-10-13"), "day", true);
+      const commissionPerDayBN = unlockedCommissionBN.dividedBy(
+        BigNumber(daysSinceStart)
+      );
+      const rewardsPerDayBN = totalRewardsBN.dividedBy(
+        BigNumber(daysSinceStart)
+      );
+      const apr = rewardsPerDayBN
+        .multipliedBy(BigNumber(365.25))
+        .dividedBy(principal)
+        .multipliedBy(BigNumber(100));
+      const unrequestedCommissions: string = unlockedCommissionBN
+        .minus(BigNumber(accumulatedCommissions))
+        .toString();
+      resData.managedPools.push({
+        pool_address: managedStakingPools[i].value.pool_address,
+        commission_percentage,
+        commission_not_yet_unlocked: unlockedCommissionBN.toString(),
+        unrequestedCommissions,
+        total_rewards: totalRewardsBN.toString(),
+        currRewards: currRewardsBN.toString(),
+        apr: apr.toNumber(),
+        rewardsPerDay: rewardsPerDayBN.toString(),
+        commissionPerDay: commissionPerDayBN.toString(),
+        principal,
+      });
+    }
   }
   res.status(200).json(resData);
 }

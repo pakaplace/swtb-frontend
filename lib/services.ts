@@ -1,20 +1,20 @@
 export const getAccountResource = async (
+  rpcUrl: string,
   address: string,
   resourceType: string
 ) => {
   const res = await fetch(
-    `${process.env.API_URL}/accounts/${address}/resource/${resourceType}`
+    `${rpcUrl}/accounts/${address}/resource/${resourceType}`
   );
   return await res.json();
 };
-export const getAccountResources = async (address: string) => {
-  const res = await fetch(
-    `${process.env.API_URL}/accounts/${address}/resources`
-  );
+export const getAccountResources = async (rpcUrl: string, address: string) => {
+  const res = await fetch(`${rpcUrl}/accounts/${address}/resources`);
   return await res.json();
 };
 
 export const getAccountEvents = async (
+  rpcUrl: string,
   address: string,
   structTag: string,
   fieldName: string,
@@ -22,9 +22,7 @@ export const getAccountEvents = async (
   limit?: number
 ) => {
   const res = await fetch(
-    `${
-      process.env.API_URL
-    }/accounts/${address}/events/${structTag}/${fieldName}?${
+    `${rpcUrl}/accounts/${address}/events/${structTag}/${fieldName}?${
       typeof start !== "undefined" ? "&start=" + start : ""
     }${typeof limit !== "undefined" ? "&limit=" + limit : ""}`
   );

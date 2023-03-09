@@ -121,6 +121,13 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
       console.log("error", error);
     }
   };
+  let cummulativeRewards = data.pool.current_rewards;
+  let unrequestedRewards = "0";
+  const hasStakingContract = data.managedPools[0];
+  if (hasStakingContract) {
+    cummulativeRewards = data.managedPools[0].total_rewards;
+    unrequestedRewards = data.managedPools[0]?.currRewards;
+  }
 
   return (
     <Stack spacing={{ base: "8", lg: "6" }} width="100%">
@@ -156,9 +163,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
         <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
           <Stat
             label={"Curr Principal"}
-            value={numeral(formatAptos(data.managedPools[0].principal)).format(
-              "0.000a"
-            )}
+            value={numeral(formatAptos(data.pool.total_stake)).format("0.000a")}
           />
           <Stat
             label={"Initial Principal"}
@@ -168,11 +173,11 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
           />
           <Stat
             label={"Cumulative Rewards"}
-            value={formatAptos(data.managedPools[0].total_rewards)}
+            value={formatAptos(cummulativeRewards)}
           />
           <Stat
             label={"Unrequested Rewards"}
-            value={formatAptos(data.managedPools[0].currRewards)}
+            value={formatAptos(unrequestedRewards)}
           />
           <Stat
             label={"Pending Inactive APT"}
@@ -196,42 +201,49 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
           />
           {/* <Stat
           label={"Daily Rewards"}
-          value={formatAptos(data.managedPools[0].rewardsPerDay)}
+          value={formatAptos(data.managedPools[0]?.rewardsPerDay)}
         /> */}
           {/* <Stat
           label={"APR"}
-          value={Number(data.managedPools[0].apr).toFixed(2) + "%"}
+          value={Number(data.managedPools[0]?.apr).toFixed(2) + "%"}
         /> */}
         </SimpleGrid>
         <Divider />
-        <MyHeading>Commissions</MyHeading>
-        <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
-          <Stat
-            label={"Commission Percentage"}
-            value={
-              Number(data.managedPools[0].commission_percentage).toFixed(2) +
-              "%"
-            }
-          />
-          <Stat
-            label={"Daily Avg Commission"}
-            value={formatAptos(data.managedPools[0].commissionPerDay)}
-          />
-          <Stat
-            label={"Requested Commission"}
-            value={formatAptos(data.accumulatedCommissions)}
-          />
-          <Stat
-            label={"Unrequested Commission"}
-            value={formatAptos(data.managedPools[0].unrequestedCommissions)}
-          />
-          <Stat
-            label={"Next Unlock At"}
-            value={dayjs(data.pool.lockup_expiration_utc_time).format(
-              "MM/DD/YY[\n]hh:mm A"
-            )}
-          />
-        </SimpleGrid>
+        {hasStakingContract && (
+          <>
+            <MyHeading>Commissions</MyHeading>
+            <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
+              <Stat
+                label={"Commission Percentage"}
+                value={
+                  Number(data.managedPools[0]?.commission_percentage).toFixed(
+                    2
+                  ) + "%"
+                }
+              />
+              <Stat
+                label={"Daily Avg Commission"}
+                value={formatAptos(data.managedPools[0]?.commissionPerDay)}
+              />
+              <Stat
+                label={"Requested Commission"}
+                value={formatAptos(data.accumulatedCommissions)}
+              />
+              <Stat
+                label={"Unrequested Commission"}
+                value={formatAptos(
+                  data.managedPools[0]?.unrequestedCommissions
+                )}
+              />
+              <Stat
+                label={"Next Unlock At"}
+                value={dayjs(data.pool.lockup_expiration_utc_time).format(
+                  "MM/DD/YY[\n]hh:mm A"
+                )}
+              />
+            </SimpleGrid>
+          </>
+        )}
         <MyHeading>Current Epoch Performance</MyHeading>
         <SimpleGrid columns={{ base: 2, md: 4 }} gap="6">
           <Stat label={"Epoch"} value={data.epoch} />
@@ -266,60 +278,65 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
           />
         </SimpleGrid>
       </Stack>
-      <Box justifyContent={"flex-start"}>
-        <MyHeading>Actions</MyHeading>
-        <Box
-          bg="bg-surface"
-          borderRadius="lg"
-          boxShadow={useColorModeValue("xs", "xs-dark")}
-          padding={3}
-          my={3}
-          alignItems="start"
-        >
-          {!connected && (
-            <Text size="sm" fontWeight={"book"}>
-              Connect your wallet by clicking on "Manage Wallet" in the navbar
-              to get started.
-            </Text>
-          )}
-          {connected && (
-            <>
-              <Box>
-                <Text fontWeight={"bold"}>Your Operator Address:</Text>
-                <CopyableField content={data.pool.operator_address} />
-              </Box>
-              <HStack alignItems={"start"}>
-                <VStack alignItems={"start"}>
-                  <Tooltip
-                    label={
-                      userIsOperator
-                        ? ""
-                        : "Connected wallet must match the operator or stake pool owner address"
-                    }
-                  >
-                    <Button
-                      isDisabled={!userIsOperator}
-                      onClick={onRequestCommission}
-                    >
-                      Request commission
+      {hasStakingContract && (
+        <>
+          <Box justifyContent={"flex-start"}>
+            <MyHeading>Actions</MyHeading>
+            <Box
+              bg="bg-surface"
+              borderRadius="lg"
+              boxShadow={useColorModeValue("xs", "xs-dark")}
+              padding={3}
+              my={3}
+              alignItems="start"
+            >
+              {!connected && (
+                <Text size="sm" fontWeight={"book"}>
+                  Connect your wallet by clicking on "Manage Wallet" in the
+                  navbar to get started.
+                </Text>
+              )}
+              {connected && (
+                <>
+                  <Box>
+                    <Text fontWeight={"bold"}>Your Operator Address:</Text>
+                    <CopyableField content={data.pool.operator_address} />
+                  </Box>
+                  <HStack alignItems={"start"}>
+                    <VStack alignItems={"start"}>
+                      <Tooltip
+                        label={
+                          userIsOperator
+                            ? ""
+                            : "Connected wallet must match the operator or stake pool owner address"
+                        }
+                      >
+                        <Button
+                          isDisabled={!userIsOperator}
+                          onClick={onRequestCommission}
+                        >
+                          Request commission
+                        </Button>
+                      </Tooltip>
+                      <Text color={"red"} fontSize="xs" ml={2}></Text>
+                    </VStack>
+                    <Button mr={2} onClick={onSendToSWTB}>
+                      Tip 1 APT to SWTB
                     </Button>
-                  </Tooltip>
-                  <Text color={"red"} fontSize="xs" ml={2}></Text>
-                </VStack>
-                <Button mr={2} onClick={onSendToSWTB}>
-                  Tip 1 APT to SWTB
-                </Button>
-              </HStack>
-            </>
-          )}
-        </Box>
-      </Box>
+                  </HStack>
+                </>
+              )}
+            </Box>
+          </Box>
+        </>
+      )}
+
       <MyHeading>Stake Pool Management</MyHeading>
       <Card minH="xs">
         <Tabs pt={1} px={1}>
           <TabList>
             <Tab>Epoch Rewards</Tab>
-            <Tab>Requested Commissions</Tab>
+            {hasStakingContract && <Tab>Requested Commissions</Tab>}
             <Tab>Add Stake</Tab>
             <Tab>Withdraw Stake</Tab>
           </TabList>
@@ -327,9 +344,11 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
             <TabPanel>
               <RewardsTable data={data} />
             </TabPanel>
-            <TabPanel>
-              <RequestCommissionsTable data={data} />
-            </TabPanel>
+            {hasStakingContract && (
+              <TabPanel>
+                <RequestCommissionsTable data={data} />
+              </TabPanel>
+            )}
             <TabPanel>
               <AddStakeTable data={data} />
             </TabPanel>
