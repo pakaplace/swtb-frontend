@@ -251,13 +251,13 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
             label={"Current Epoch Start"}
             value={dayjs
               .unix(data.current_epoch_start_time / 1_000_000)
-              .format("MM/DD hh:mm A")}
+              .format("M/D hh:mm A")}
           />
           <Stat
             label={"Next Epoch At"}
             value={dayjs
               .unix(data.next_epoch_start_time / 1_000_000)
-              .format("MM/DD hh:mm A")}
+              .format("M/D hh:mm A")}
           />
           <Stat
             label={"Successful Proposals"}
