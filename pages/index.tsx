@@ -84,7 +84,7 @@ const Index = ({ data }: HomeProps) => {
           </Text>
         </Link>
         <Link
-          href="https://dashboard.stakeaptos.com/dashboard/0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda/0xccc221485ee530f3981f4beca12f010d2e7bb38d3fe30bfcf7798d99f4aabb33"
+          href="https://dashboard.stakeaptos.com/dashboard/0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda/0xccc221485ee530f3981f4beca12f010d2e7bb38d3fe30bfcf7798d99f4aabb33?network=mainnet"
           replace
         >
           <Text
