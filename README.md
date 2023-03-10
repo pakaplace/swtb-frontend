@@ -1,3 +1,5 @@
 # Instructions
-1. `yarn`
-2. `yarn dev`
+1. `touch .env.local`
+2. Add variables to `.env.local`. See the `.env.example` file - you may reuse its RPC API URL's or input your own.
+3. `yarn`
+4. `yarn dev`
