@@ -241,6 +241,10 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
                   "MM/DD/YY[\n]hh:mm A"
                 )}
               />
+              {console.log(
+                "lockup_expiration_utc_time~",
+                data.pool.lockup_expiration_utc_time
+              )}
             </SimpleGrid>
           </>
         )}
@@ -268,13 +272,15 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
           />
           <Stat
             label={"Last Epoch Rewards"}
-            value={formatAptos(data.previous_epoch_rewards[0])}
+            value={formatAptos(data.previous_epoch_rewards?.[0]) || "-"}
           />
           <Stat
             label={"Last Epoch Commission"}
-            value={formatAptos(
-              (Number(data.previous_epoch_rewards[0]) * 0.12).toString()
-            )}
+            value={
+              formatAptos(
+                (Number(data.previous_epoch_rewards?.[0]) * 0.12).toString()
+              ) || "-"
+            }
           />
         </SimpleGrid>
       </Stack>
@@ -373,7 +379,7 @@ const RewardsTable = ({ data }: { data: any }) => (
         </Tr>
       </Thead>
       <Tbody>
-        {data.previous_epoch_rewards.map((reward: string, i: number) => (
+        {data.previous_epoch_rewards?.map((reward: string, i: number) => (
           <Tr key={i}>
             <Td>
               {dayjs

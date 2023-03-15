@@ -110,6 +110,7 @@ export default async function handler(
   let vesting_contract;
   let current_epoch_successful_proposals;
   let current_epoch_failed_proposals;
+  let previous_epoch_rewards;
   // variables added by parker
 
   // const pool: string =
@@ -129,6 +130,7 @@ export default async function handler(
   let current_epoch_start_time = Number(
     reconfig_resource.data.last_reconfiguration_time
   );
+  console.log("reconfig", reconfig_resource.data.last_reconfiguration_time);
   let next_epoch_start_time = current_epoch_start_time + epoch_interval_secs;
 
   const [validatorSet, validatorPerformances] = await Promise.all([
@@ -221,11 +223,28 @@ export default async function handler(
   addStakeEvents.forEach((event: AddStakeEvent) => {
     initialPrincipal = initialPrincipal.plus(BigNumber(event.amount_added));
   });
-  let previous_epoch_rewards = distribute_rewards_events
-    .map((event: any) => {
-      return event.data.rewards_amount;
-    })
-    .reverse();
+  console.log(
+    "~~~",
+    distribute_rewards_events,
+    validatorConfigRes,
+    stakingConfigRes,
+    stakePoolRes,
+    managedStakingPoolRes,
+    add_stake_events,
+    withdraw_stake_events,
+    withdraw_events,
+    deposit_events,
+    request_commission_events
+  );
+  console.log("rewards~~", distribute_rewards_events);
+  if (distribute_rewards_events?.length) {
+    previous_epoch_rewards = distribute_rewards_events
+      ?.map((event: any) => {
+        return event.data.rewards_amount;
+      })
+      .reverse();
+  }
+
   // .slice(0, 100);
   let withdrawStakeEvents = withdraw_stake_events
     .map((event: any) => event.data)
@@ -248,6 +267,7 @@ export default async function handler(
   operator_address = !!stakePoolRes?.data?.operator_address;
   voter_address = !!stakePoolRes?.data?.voter_address;
   total_stake = stakePoolRes?.data?.active.value;
+  console.log("stakePoolRes?.data", stakePoolRes?.data?.locked_until_secs);
   lockup_expiration_utc_time = dayjs.unix(
     stakePoolRes?.data?.locked_until_secs
   );

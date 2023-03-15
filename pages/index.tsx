@@ -63,7 +63,24 @@ const Index = ({ data }: HomeProps) => {
         <Heading size={["xs", "sm"]} mb={8} color="gray.700">
           Aptos Validator Performance Dashboard
         </Heading>
-
+        <Link
+          href="https://dashboard.stakeaptos.com/dashboard/0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda/0xccc221485ee530f3981f4beca12f010d2e7bb38d3fe30bfcf7798d99f4aabb33?network=mainnet"
+          replace
+        >
+          <Text
+            fontSize={["sm"]}
+            textAlign="left"
+            as="span"
+            fontWeight="semibold"
+            color="blue.500"
+            _hover={{ color: "blue.600" }}
+            alignSelf="flex-start"
+            textUnderlineOffset={1}
+            cursor="pointer"
+          >
+            Mainnet <u>example</u> {", "}
+          </Text>
+        </Link>
         <Link
           href={`https://dashboard.stakeaptos.com/dashboard/55da0aea9a704b88a919622b2dd4fc057e6c992e28f7adb2f3bb398ba7b975f5/55da0aea9a704b88a919622b2dd4fc057e6c992e28f7adb2f3bb398ba7b975f5?network=previewnet`}
           replace
@@ -80,25 +97,6 @@ const Index = ({ data }: HomeProps) => {
             cursor="pointer"
           >
             Previewnet <u>example</u>
-            {", "}
-          </Text>
-        </Link>
-        <Link
-          href="https://dashboard.stakeaptos.com/dashboard/0x9da88926fd4d773fd499fc41830a82fe9c9ff3508435e7a16b2d8f529e77cdda/0xccc221485ee530f3981f4beca12f010d2e7bb38d3fe30bfcf7798d99f4aabb33?network=mainnet"
-          replace
-        >
-          <Text
-            fontSize={["sm"]}
-            textAlign="left"
-            as="span"
-            fontWeight="semibold"
-            color="blue.500"
-            _hover={{ color: "blue.600" }}
-            alignSelf="flex-start"
-            textUnderlineOffset={1}
-            cursor="pointer"
-          >
-            Mainnet <u>example</u>
           </Text>
         </Link>
         <Stack spacing={{ base: "8" }} mt={4}>
