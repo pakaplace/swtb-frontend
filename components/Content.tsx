@@ -241,10 +241,6 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
                   "MM/DD/YY[\n]hh:mm A"
                 )}
               />
-              {console.log(
-                "lockup_expiration_utc_time~",
-                data.pool.lockup_expiration_utc_time
-              )}
             </SimpleGrid>
           </>
         )}
