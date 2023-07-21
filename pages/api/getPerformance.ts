@@ -141,6 +141,7 @@ export default async function handler(
       "0x1::stake::ValidatorPerformance"
     ),
   ]);
+  console.log("validator~", validatorPerformances);
   const validator = validatorSet.data.active_validators.find(
     (validator: any) => validator.addr === pool
   );
