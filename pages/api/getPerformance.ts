@@ -216,6 +216,29 @@ export default async function handler(
       StakingContractEvents.request_commission
     ),
   ]);
+
+  console.log(
+    1,
+    distribute_rewards_events,
+    2,
+    validatorConfigRes,
+    3,
+    stakingConfigRes,
+    4,
+    stakePoolRes,
+    5,
+    managedStakingPoolRes,
+    6,
+    add_stake_events,
+    7,
+    withdraw_stake_events,
+    8,
+    withdraw_events,
+    9,
+    deposit_events,
+    10,
+    request_commission_events
+  );
   const stakingConfig: StakingConfig = stakingConfigRes.data;
   const addStakeEvents = add_stake_events.map((event: any) => event.data);
   let initialPrincipal = BigNumber(0);
@@ -223,20 +246,6 @@ export default async function handler(
   addStakeEvents.forEach((event: AddStakeEvent) => {
     initialPrincipal = initialPrincipal.plus(BigNumber(event.amount_added));
   });
-  console.log(
-    "~~~",
-    distribute_rewards_events,
-    validatorConfigRes,
-    stakingConfigRes,
-    stakePoolRes,
-    managedStakingPoolRes,
-    add_stake_events,
-    withdraw_stake_events,
-    withdraw_events,
-    deposit_events,
-    request_commission_events
-  );
-  console.log("rewards~~", distribute_rewards_events);
   if (distribute_rewards_events?.length) {
     previous_epoch_rewards = distribute_rewards_events
       ?.map((event: any) => {
