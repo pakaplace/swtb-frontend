@@ -5,6 +5,7 @@ import { Box, ChakraProvider, Container, extendTheme } from "@chakra-ui/react";
 import "@fontsource/inter/variable.css";
 import { MartianWallet } from "@martianwallet/aptos-wallet-adapter";
 import { PontemWallet } from "@pontem/wallet-adapter-plugin";
+import { Analytics } from "@vercel/analytics/react";
 import { FewchaWallet } from "fewcha-plugin-wallet-adapter";
 import type { AppProps } from "next/app";
 import { PetraWallet } from "petra-plugin-wallet-adapter";
@@ -34,6 +35,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Box as="section" height="100vh" overflowY="auto">
           <Navbar />
           <Container pt={{ base: "8", lg: "12" }} pb={{ base: "12", lg: "24" }}>
+            <Analytics />
             <Component {...pageProps} />
           </Container>
         </Box>
