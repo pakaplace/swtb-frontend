@@ -30,7 +30,6 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
 import numeral from "numeral";
 import * as React from "react";
@@ -42,14 +41,10 @@ import {
   RequestCommissionEvent,
   WithdrawStakeEvent,
 } from "../pages/api/getPerformance";
+import { formatAptos } from "../utils";
 import CopyableField from "./CopyableField";
 import { MyHeading } from "./MyHeading";
 import { Stat } from "./Stat";
-
-const formatAptos = (val: string, decimals?: number) =>
-  BigNumber(val)
-    .shiftedBy(-8)
-    .toFormat(decimals ?? 0);
 
 interface ContentProps {
   data: any;
