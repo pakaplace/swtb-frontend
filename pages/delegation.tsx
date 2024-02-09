@@ -18,7 +18,48 @@ import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { ParsedUrlQuery } from "querystring";
 
-import { formatAptosBigNumber } from "../utils";
+import { formatAptos, formatAptosBigNumber } from "../utils";
+
+enum StakeEvents {
+  AddStakeEvent = "AddStakeEvent",
+  WithdrawStakeEvent = "WithdrawStakeEvent",
+  UnlockStakeEvent = "UnlockStakeEvent",
+  ReactivateStakeEvent = "ReactivateStakeEvent",
+}
+
+const getEventTypeDisplayName = (eventType: string) => {
+  switch (eventType) {
+    case "AddStakeEvent":
+      return "Add Stake";
+    case "WithdrawStakeEvent":
+      return "Withdraw Stake";
+    case "UnlockStakeEvent":
+      return "Unlock Stake";
+    case "ReactivateStakeEvent":
+      return "Reactivate Stake";
+    default:
+      return eventType; // Return the eventType as is if it doesn't match
+  }
+};
+
+function getFirstExistingEventValue(event: DelegationEvent): string {
+  const keys: (keyof DelegationEvent)[] = [
+    "amount_added",
+    "add_stake_fee",
+    "amount_unlocked",
+    "amount_reactivated",
+    "amount_withdrawn",
+    "transaction_version",
+  ];
+
+  for (const key of keys) {
+    if (event[key]) {
+      return formatAptos(event[key]);
+    }
+  }
+
+  return "N/A"; // or any other default value you want to return if none of the keys exist
+}
 
 type ChainData = {
   getStakeResult: [string, string, string]; // active, inactive, pending
@@ -93,17 +134,25 @@ const Home = ({
   realtime: ChainData;
 }) => {
   const totalAdded = events.reduce((acc, event) => {
-    if (event.event_type === "AddStakeEvent") {
+    if (event.event_type === StakeEvents.AddStakeEvent) {
       return acc.plus(new BigNumber(event.amount_added));
     }
     return acc;
   }, new BigNumber(0));
+  const totalWithdrawn = events.reduce((acc, event) => {
+    if (event.event_type === StakeEvents.WithdrawStakeEvent) {
+      return acc.plus(new BigNumber(event.amount_added));
+    }
+    return acc;
+  }, new BigNumber(0));
+
   const currentStake = BigNumber(realtime?.getStakeResult[0]);
   // Calculate the percentage returned
   const percentageReturned = totalAdded.isZero()
     ? new BigNumber(0)
     : currentStake.minus(totalAdded).dividedBy(totalAdded).multipliedBy(100);
   console.log(percentageReturned?.toString());
+  console.log("event", event);
   return (
     <>
       <Head>
@@ -138,34 +187,29 @@ const Home = ({
               <Th>Pool Address</Th>
               <Th>Delegator Address</Th>
               <Th>Event Type</Th>
-              <Th>Amount Added</Th>
-              <Th>Add Stake Fee</Th>
-              <Th>Amount Unlocked</Th>
-              <Th>Amount Reactivated</Th>
-              <Th>Amount Withdrawn</Th>
+              <Th>Amount</Th>
               <Th>Transaction Version</Th>
               <Th>Transaction Timestamp</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {events.map((event, index) => (
-              <Tr key={index}>
-                <Td>{event.sequence_number}</Td>
-                <Td>{event.creation_number}</Td>
-                <Td>{event.pool_address}</Td>
-                <Td>{event.delegator_address}</Td>
-                <Td>{event.event_type}</Td>
-                <Td>{event.amount_added}</Td>
-                <Td>{event.add_stake_fee}</Td>
-                <Td>{event.amount_unlocked}</Td>
-                <Td>{event.amount_reactivated}</Td>
-                <Td>{event.amount_withdrawn}</Td>
-                <Td>{event.transaction_version}</Td>
-                <Td>
-                  {new Date(event.transaction_timestamp).toLocaleString()}
-                </Td>
-              </Tr>
-            ))}
+            {events.map((event, index) => {
+              console.log("EVENT", event);
+              return (
+                <Tr key={index}>
+                  <Td>{event.sequence_number}</Td>
+                  <Td>{event.creation_number}</Td>
+                  <Td>{event.pool_address}</Td>
+                  <Td>{event.delegator_address}</Td>
+                  <Td>{getEventTypeDisplayName(event.event_type)}</Td>
+                  <Td>{getFirstExistingEventValue(event)}</Td>
+                  <Td>{formatAptos(event.transaction_version)}</Td>
+                  <Td>
+                    {new Date(event.transaction_timestamp).toLocaleString()}
+                  </Td>
+                </Tr>
+              );
+            })}
           </Tbody>
         </Table>
       </TableContainer>
