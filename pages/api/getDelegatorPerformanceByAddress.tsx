@@ -11,16 +11,33 @@ const pool = new Pool({
     rejectUnauthorized: false,
   },
 });
-const getDelegatorPerformanceByAddress = async (
+export type DelegationEvent = {
+  sequence_number: string;
+  creation_number: string;
+  pool_address: string;
+  delegator_address: string;
+  event_type: string;
+  amount_added: string;
+  add_stake_fee: string;
+  amount_unlocked: string;
+  amount_reactivated: string;
+  amount_withdrawn: string;
+  transaction_version: string;
+  transaction_timestamp: string;
+  inserted_at: string;
+  event_index: string;
+};
+
+export const getDelegatorPerformanceByAddress = async (
   pool_address: string,
   delegator_address: string
-) => {
+): Promise<DelegationEvent[]> => {
   if (!process.env.DB_CONNECTION_URI) return Error("Missing DB_CONNECTION_URI");
+  // Connect to the database
+  console.log("Connecting");
+  const client = await pool.connect();
+  console.log("Connected");
   try {
-    // Connect to the database
-    console.log("Connecting");
-    const client = await pool.connect();
-    console.log("Connected");
     // Perform a query
     const result = await client.query(
       `SELECT * FROM delegation_pool.delegation_pool_events WHERE pool_address = $1 AND delegator_address = $2`,
@@ -36,6 +53,8 @@ const getDelegatorPerformanceByAddress = async (
     // Return the query result
     return result.rows;
   } catch (err) {
+    client.release();
+
     // Handle errors, such as connection errors
     console.error("Database query error", err);
     throw err;

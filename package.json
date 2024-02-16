@@ -9,9 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@aptos-labs/ts-sdk": "^1.4.0",
+    "@aptos-labs/ts-sdk": "1.7.0",
     "@aptos-labs/wallet-adapter-ant-design": "^0.1.0",
-    "@aptos-labs/wallet-adapter-react": "^0.2.2",
+    "@aptos-labs/wallet-adapter-react": "2.1.8",
     "@chakra-ui/pro-theme": "^0.0.57",
     "@chakra-ui/react": "^2.3.5",
     "@emotion/react": "^11.10.4",
@@ -27,6 +27,7 @@
     "dayjs": "^1.11.5",
     "fewcha-plugin-wallet-adapter": "^0.1.1",
     "framer-motion": "^7.5.3",
+    "iconsax-react": "^0.0.8",
     "next": "12.3.1",
     "numeral": "^2.0.6",
     "petra-plugin-wallet-adapter": "^0.1.3",
