@@ -25,9 +25,10 @@ interface Props {
     value: string;
     isUpwardsTrend: boolean;
   };
+  bottomLabel?: string;
 }
 export const Stat = (props: Props) => {
-  const { label, value, delta, ...boxProps } = props;
+  const { label, value, delta, bottomLabel, ...boxProps } = props;
   return (
     <Box
       bg="bg-surface"
@@ -57,12 +58,23 @@ export const Stat = (props: Props) => {
             >
               {value}
             </Text>
-            {/* <Badge variant="subtle" colorScheme={delta.isUpwardsTrend ? 'green' : 'red'}>
+            {bottomLabel && <Text color="gray.500">{bottomLabel}</Text>}
+
+            {delta && (
+              <Badge
+                variant="subtle"
+                colorScheme={delta?.isUpwardsTrend ? "green" : "red"}
+              >
                 <HStack spacing="1">
-                  <Icon as={delta.isUpwardsTrend ? FiArrowUpRight : FiArrowDownRight} />
-                  <Text>{delta.value}</Text>
+                  <Icon
+                    as={
+                      delta?.isUpwardsTrend ? FiArrowUpRight : FiArrowDownRight
+                    }
+                  />
+                  <Text>{delta?.value}</Text>
                 </HStack>
-              </Badge> */}
+              </Badge>
+            )}
           </HStack>
         </Stack>
       </Box>

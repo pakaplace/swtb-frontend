@@ -23,13 +23,11 @@ import { Router } from "next/router";
 import { useState } from "react";
 import { AiFillQuestionCircle } from "react-icons/ai";
 
+import isHex from "../lib/utils/isHex";
+
 type HomeProps = {
   data: any;
 };
-
-function isHex(val: string) {
-  return Boolean(val.match(/^0x[0-9a-f]+$/i));
-}
 
 const Index = ({ data }: HomeProps) => {
   const [pool, setPool] = useState<string>("");

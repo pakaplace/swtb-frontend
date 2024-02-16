@@ -30,7 +30,6 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
 import numeral from "numeral";
 import * as React from "react";
@@ -42,14 +41,10 @@ import {
   RequestCommissionEvent,
   WithdrawStakeEvent,
 } from "../pages/api/getPerformance";
+import { formatAptos } from "../utils";
 import CopyableField from "./CopyableField";
 import { MyHeading } from "./MyHeading";
 import { Stat } from "./Stat";
-
-const formatAptos = (val: string, decimals?: number) =>
-  BigNumber(val)
-    .shiftedBy(-8)
-    .toFormat(decimals ?? 0);
 
 interface ContentProps {
   data: any;
@@ -90,7 +85,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
     };
 
     try {
-      const response = await signAndSubmitTransaction(payload);
+      // const response = await signAndSubmitTransaction(payload);
       toast({
         title: "Transaction success",
         description: "1 APT was successfully transferred to Parker",
@@ -115,8 +110,8 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
     };
 
     try {
-      const response = await signAndSubmitTransaction(payload);
-      console.log(response);
+      // const response = await signAndSubmitTransaction(payload);
+      // console.log(response);
     } catch (error: any) {
       console.log("error", error);
     }
