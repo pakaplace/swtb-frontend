@@ -229,7 +229,7 @@ const Home = ({
 
   useEffect(() => {
     console.log("Account", account?.address, delegator);
-    if (!account?.address && !address && !delegator) {
+    if (!account?.address && !address) {
       onOpen(); // Open connect wallet modal
     } else {
       onClose();
