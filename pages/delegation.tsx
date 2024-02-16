@@ -292,6 +292,7 @@ const Home = ({
   const undelegate = async (amount: number, poolAddress: string) => {
     console.log("DELEGATING from ", account);
     if (!account?.address) return console.error("Connect wallet");
+    console.log("Amount~~~~~~~~", amount);
     const response = await signAndSubmitTransaction({
       data: {
         function: "0x1::delegation_pool::unlock",
@@ -308,6 +309,7 @@ const Home = ({
   };
   const handleUndelegateSubmit = async () => {
     const amountBN = new BigNumber(undelegateAmount).shiftedBy(8); // Shift the entered amount by 8 digits to the left
+    console.log("amountBN~~", amountBN.toNumber());
     // ... similar logic to handleDelegateSubmit but for undelegation
     if (
       !amountBN.isNaN() &&
@@ -493,7 +495,7 @@ const Home = ({
                           2
                         )}
                       </Td>
-                      <Td>dd/mm/yyyy</Td>
+                      <Td>3/24/24</Td>
                       {/* <Td>{formatAptos(event.transaction_version)}</Td> */}
                       <Td>
                         {dayjs(
