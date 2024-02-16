@@ -584,7 +584,7 @@ const Home = ({
                             Undelegate
                           </Button>
                         )}
-                        {account?.address && (
+                        {/* {account?.address && (
                           <Button
                             colorScheme={"red"}
                             color="white"
@@ -593,7 +593,7 @@ const Home = ({
                           >
                             Withdraw
                           </Button>
-                        )}
+                        )} */}
                       </Td>
                     </Tr>
                   );
