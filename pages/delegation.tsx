@@ -331,11 +331,15 @@ const Home = ({
     let totalWithdrawn = new BigNumber(0);
     let currentStake = new BigNumber(0);
     let pendingWithdrawal = new BigNumber(0);
-
+    console.log("delegation ", delegationData);
     delegationData?.length &&
       delegationData?.forEach((delegation) => {
         delegation.performance.forEach((event) => {
-          if (event.event_type === StakeEvents.AddStakeEvent) {
+          console.log("Adding~~~", event.amount_added);
+          if (
+            event.event_type === StakeEvents.AddStakeEvent ||
+            event.event_type === StakeEvents.ReactivateStakeEvent
+          ) {
             totalAdded = totalAdded.plus(new BigNumber(event.amount_added));
           } else if (event.event_type === StakeEvents.WithdrawStakeEvent) {
             totalWithdrawn = totalWithdrawn.plus(
@@ -351,7 +355,17 @@ const Home = ({
         );
       });
 
-    const netStake = currentStake.minus(totalAdded).plus(totalWithdrawn);
+    console.log(
+      "Current State",
+      currentStake.toString(),
+      totalAdded.toString(),
+      totalWithdrawn.toString(),
+      pendingWithdrawal.toString()
+    );
+    const netStake = currentStake
+      .minus(totalAdded)
+      .plus(pendingWithdrawal)
+      .minus(totalWithdrawn);
     const percentageReturned = totalAdded.isZero()
       ? new BigNumber(0)
       : netStake.dividedBy(totalAdded).multipliedBy(100);
