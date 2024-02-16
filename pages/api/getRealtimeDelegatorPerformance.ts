@@ -54,12 +54,15 @@ export const getRealtimeDelegatorPerformance = async (
   const getOperatorCommissionPercentage = await aptos.view({
     payload: getOperatorCommissionPercentagePayload,
   });
-
+  console.log(
+    "Returns active, inactive, pending inactive stake",
+    getStakeResult
+  );
   return {
     activeStake: getStakeResult[0] as string,
     inactiveStake: getStakeResult[1] as string,
     pendingActiveStake: getStakeResult[2] as string,
-    pendingInactiveStake: getStakeResult[3] as string,
+    pendingInactiveStake: getStakeResult[2] as string,
     pendingWithdrawAmount: getPendingWidthdrawalResult[1] as string,
     lockupCycle: getObservedLockupCycle[0] as string,
     operatorCommission: getOperatorCommissionPercentage[0] as string,

@@ -307,6 +307,9 @@ const Home = ({
       console.error("error signing", error);
     }
   };
+
+  const withdraw = async () => {};
+
   const handleUndelegateSubmit = async () => {
     const amountBN = new BigNumber(undelegateAmount).shiftedBy(8); // Shift the entered amount by 8 digits to the left
     console.log("amountBN~~", amountBN.toNumber());
@@ -463,14 +466,14 @@ const Home = ({
           <Stat
             label="Cumm. Undelegated"
             value={`${formatAptosBigNumber(
-              stakingSummary.totalWithdrawn,
+              stakingSummary.pendingWithdrawal,
               2
             )} APT`}
           />
           <Stat
-            label="Cumm. Withdrawable"
+            label="Cumm. Withdrawn"
             value={`${formatAptosBigNumber(
-              stakingSummary.pendingWithdrawal,
+              stakingSummary.totalWithdrawn,
               2
             )} APT`}
           />
@@ -485,6 +488,7 @@ const Home = ({
               <Tr>
                 <Th>Staking Pool</Th>
                 <Th>Current Stake</Th>
+                <Th>Withdrawable</Th>
                 <Th>Unlock Date</Th>
                 <Th>Staked on</Th>
                 <Th>Operator commission</Th>
@@ -508,6 +512,22 @@ const Home = ({
                           BigNumber(delegation.realtimePerformance.activeStake),
                           2
                         )}
+                      </Td>
+                      <Td>
+                        {formatAptosBigNumber(
+                          BigNumber(
+                            delegation.realtimePerformance.pendingInactiveStake
+                          ),
+                          2
+                        )}{" "}
+                        pending <br></br>{" "}
+                        {formatAptosBigNumber(
+                          BigNumber(
+                            delegation.realtimePerformance.inactiveStake
+                          ),
+                          2
+                        )}{" "}
+                        withdrawable
                       </Td>
                       <Td>3/24/24</Td>
                       {/* <Td>{formatAptos(event.transaction_version)}</Td> */}
@@ -562,6 +582,16 @@ const Home = ({
                             }
                           >
                             Undelegate
+                          </Button>
+                        )}
+                        {account?.address && (
+                          <Button
+                            colorScheme={"red"}
+                            color="white"
+                            isDisabled={!account?.address}
+                            onClick={() => withdraw()}
+                          >
+                            Withdraw
                           </Button>
                         )}
                       </Td>
