@@ -85,7 +85,7 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
     };
 
     try {
-      const response = await signAndSubmitTransaction(payload);
+      // const response = await signAndSubmitTransaction(payload);
       toast({
         title: "Transaction success",
         description: "1 APT was successfully transferred to Parker",
@@ -110,8 +110,8 @@ export const Content = ({ data, pool, owner }: ContentProps) => {
     };
 
     try {
-      const response = await signAndSubmitTransaction(payload);
-      console.log(response);
+      // const response = await signAndSubmitTransaction(payload);
+      // console.log(response);
     } catch (error: any) {
       console.log("error", error);
     }

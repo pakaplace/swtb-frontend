@@ -32,7 +32,8 @@ export const getDelegatorPerformanceByAddress = async (
   pool_address: string,
   delegator_address: string
 ): Promise<DelegationEvent[]> => {
-  if (!process.env.DB_CONNECTION_URI) return Error("Missing DB_CONNECTION_URI");
+  if (!process.env.DB_CONNECTION_URI)
+    throw new Error("Missing DB_CONNECTION_URI");
   // Connect to the database
   console.log("Connecting");
   const client = await pool.connect();
@@ -43,23 +44,14 @@ export const getDelegatorPerformanceByAddress = async (
       `SELECT * FROM delegation_pool.delegation_pool_events WHERE pool_address = $1 AND delegator_address = $2`,
       [pool_address, delegator_address]
     );
-    // const result = await client.query(
-    //   "SELECT * FROM delegation_pool.delegation_pool_events LIMIT 1000"
-    //   //   [pool_address, delegator_address]
-    // );
-    // Release the client back to the pool
     client.release();
-    // console.log("result", result.rows);
-    // Return the query result
     return result.rows;
   } catch (err) {
     client.release();
 
-    // Handle errors, such as connection errors
     console.error("Database query error", err);
     throw err;
   }
-  // List delegator events here
 };
 
 export default async function handler(

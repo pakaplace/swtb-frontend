@@ -30,17 +30,19 @@ export interface DelegationPoolPerformance {
 const getDelegationPoolsByDelegatorAddress = async (
   delegatorAddress: string
 ): Promise<DelegationPoolPerformance[]> => {
-  if (!process.env.DB_CONNECTION_URI) return Error("Missing DB_CONNECTION_URI");
-
+  if (!process.env.DB_CONNECTION_URI)
+    throw new Error("Missing DB_CONNECTION_URI");
+  console.log("Connecting");
+  const client = await db.connect();
   try {
     // Connect to the database
-    console.log("Connecting");
-    const client = await db.connect();
+
     // Perform a query
     const result = await client.query(
       `SELECT * FROM delegation_pool.delegation_pool_events WHERE delegator_address = $1`,
       [delegatorAddress]
     );
+    client.release();
     // Extract unique pool addresses
     const uniquePoolAddressesSet = new Set<string>();
     for (const row of result.rows) {
@@ -69,6 +71,7 @@ const getDelegationPoolsByDelegatorAddress = async (
 
     return performanceResults;
   } catch (err) {
+    client.release();
     console.error("Database query error", err);
     throw err;
   }

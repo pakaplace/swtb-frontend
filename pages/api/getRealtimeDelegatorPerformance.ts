@@ -1,7 +1,4 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
-import BigNumber from "bignumber.js";
-import dayjs from "dayjs";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 export interface RealtimeDelegatorPerformance {
@@ -14,32 +11,34 @@ export interface RealtimeDelegatorPerformance {
   operatorCommission: string;
 }
 
+type FunctionName = `${string}::${string}::${string}`;
+
 export const getRealtimeDelegatorPerformance = async (
   pool_address: string,
   delegator_address: string
 ): Promise<RealtimeDelegatorPerformance> => {
-  console.log("realtime~~", pool_address, delegator_address);
   const aptosConfig = new AptosConfig({
     fullnode: process.env.API_URL_MAINNET,
   });
   const aptos = new Aptos(aptosConfig);
   const getStakePayload = {
-    function: "0x1::delegation_pool::get_stake",
+    function: "0x1::delegation_pool::get_stake" as FunctionName,
     functionArguments: [pool_address, delegator_address],
   };
   // Returns has withdrawal boolean, withdrawalable stake
   const getPendingWithdrawalPayload = {
-    function: "0x1::delegation_pool::get_pending_withdrawal",
+    function: "0x1::delegation_pool::get_pending_withdrawal" as FunctionName,
     functionArguments: [pool_address, delegator_address],
   };
 
   const getObservedLockupCyclePayload = {
-    function: "0x1::delegation_pool::observed_lockup_cycle",
+    function: "0x1::delegation_pool::observed_lockup_cycle" as FunctionName,
     functionArguments: [pool_address],
   };
 
   const getOperatorCommissionPercentagePayload = {
-    function: "0x1::delegation_pool::operator_commission_percentage",
+    function:
+      "0x1::delegation_pool::operator_commission_percentage" as FunctionName,
     functionArguments: [pool_address],
   };
 
@@ -67,26 +66,26 @@ export const getRealtimeDelegatorPerformance = async (
   };
 };
 
-export default async function handler(req: NextApiRequest, res: any) {
-  console.log("CALLED~~~");
-  let pool_address = req.query.pool_address as string;
-  let delegator_address = req.query.delegator_address as string;
-  console.log("pool_address", pool_address);
-  const result = await getRealtimeDelegatorPerformance(
-    pool_address,
-    delegator_address
-  );
-  // console.log("RESULT~", result);
-  res.status(200).json(result);
-  //   const RPC_URL =
-  //     network === "previewnet"
-  //       ? process.env.API_URL_PREVIEWNET
-  //       : process.env.API_URL_MAINNET;
-  //   if (!RPC_URL) {
-  //     return res
-  //       .status(500)
-  //       .json({ error: "Missing RPC URL. Contact pleeplace@gmail.com" });
-  //   }
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  try {
+    const pool_address = req.query.pool_address as string;
+    const delegator_address = req.query.delegator_address as string;
 
-  res.status(200).json({});
+    // Validate the input addresses
+    if (!pool_address || !delegator_address) {
+      return res.status(400).json({ error: "Invalid request parameters." });
+    }
+
+    const result = await getRealtimeDelegatorPerformance(
+      pool_address,
+      delegator_address
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 }
