@@ -258,6 +258,7 @@ const Home = ({
   };
 
   const stakingHistoryTableData = useMemo(() => {
+    console.log("Delegation data", delegationData);
     if (!delegationData?.length) return [];
     return delegationData?.flatMap((delegation) =>
       delegation.performance.map((event) => ({
@@ -268,6 +269,7 @@ const Home = ({
         eventTypeDisplay: getEventTypeDisplayName(event.event_type),
         eventAmount: getFirstExistingEventValue(event.event_type, event),
         eventDate: dayjs(event.transaction_timestamp).format("M/D/YY hh:mm A"),
+        txLink: `https://explorer.aptoslabs.com/txn/${event.transaction_version}?network=mainnet`,
       }))
     );
   }, [delegationData]);
@@ -623,7 +625,14 @@ const Home = ({
                   <Td>{data.eventAmount}</Td>
                   <Td>{data.eventDate}</Td>
                   <Td>
-                    <Button colorScheme={"gray"}>View</Button>
+                    <Button
+                      as="a"
+                      href={data.txLink}
+                      target="_blank"
+                      colorScheme={"gray"}
+                    >
+                      View
+                    </Button>
                   </Td>
                 </Tr>
               ))}
